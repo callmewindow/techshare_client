@@ -1,4 +1,4 @@
-# hungry_for_tech
+# techshare_client
 
 ## Project setup
 ```

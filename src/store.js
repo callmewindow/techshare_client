@@ -7,7 +7,7 @@ import * as ReportAPI from './APIs/report'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({//存储用户的状态
+export default new Vuex.Store({
   state: {
     title: siteTitleInFull,
     jwkToken: 'null',
@@ -40,25 +40,6 @@ export default new Vuex.Store({//存储用户的状态
 
     updateAvatarUrl(state, url) {
       state.avatarUrl = url
-    },
-
-    /**
-     * When the option is not specified, then the function defaultedly assumes that a snackbar is to be
-     * displayed, and hence you must provide a `content` and a `color` option. Otherwise the function
-     * will throw an exception. When no option is provided, then the function will hide the current
-     * snackbar.
-     */
-    updateSnackbar(state, option) {
-      state.snackbar.display = false
-      if (option != null) {
-        if (option.content == undefined || option.color == undefined)
-          throw new Error('Incorrect parameters in the option provided.')
-        setTimeout(() => {
-          state.snackbar.display = true
-          state.snackbar.content = option.content
-          state.snackbar.color = option.color
-        }, 100)
-      }
     },
 
     updateNavImg(state, img) {

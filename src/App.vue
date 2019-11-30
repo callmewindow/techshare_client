@@ -1,18 +1,26 @@
 <template>
   <div id="app">
-<!--    <img alt="Vue logo" src="./assets/logo.png">-->
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- 全局展示的组件 -->
+    <Navigator />
+    <!-- 初始内容，利用msg可以进行传值操作 -->
+<!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
+    <!-- 进行内容的替换，路径代表的组件在router.js中查看 -->
+    <keep-alive>
+      <router-view :key="$route.path" />
+    </keep-alive>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navigator from "@/components/Navigator";
+import { siteTitle } from './strings'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
-  }
+    Navigator
+  },
+  data: () => ({ siteTitle }),
 }
 </script>
 

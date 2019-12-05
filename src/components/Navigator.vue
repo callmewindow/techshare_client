@@ -1,23 +1,45 @@
 <template>
-  <el-container>
-    <el-header>
-      <div @click="toHome" style="cursor: pointer">{{ siteTitle }}</div>
-    </el-header>
-    <el-main>
-      <el-button @click="toNavigator"> {{ name1 }} </el-button>
-    </el-main>
-    <el-footer>
-      <el-button @click="toHelloWorld"> {{ name2 }} </el-button>
-    </el-footer>
-  </el-container>
+  <div id="navigator">
+
+    <el-menu id="menu" :router="true" :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+      <el-menu-item index="Home">
+        <el-image
+          style="height: 25px;width: 100px;margin: auto;"
+          :src="wel"/>
+      </el-menu-item>
+
+      <el-menu-item v-show="needSearch === 'true' ">
+        <el-input placeholder="请输入内容" v-model="input" class="input-with-select">
+          <el-select v-model="select" style="width: 80px" slot="prepend">
+            <el-option label="论文" value="论文"></el-option>
+            <el-option label="专利" value="专利"></el-option>
+            <el-option label="专家" value="专家"></el-option>
+          </el-select>
+          <el-button slot="append" icon="el-icon-search"></el-button>
+        </el-input>
+      </el-menu-item>
+      <el-menu-item style="float:right;" index="User">
+        <i class="el-icon-user"></i>
+      </el-menu-item>
+      <el-menu-item style="float:right;" index="Expert">
+        <i class="el-icon-s-custom"></i>
+      </el-menu-item>
+      <el-menu-item style="float:right;" index="Setting">
+        <i class="el-icon-setting"></i>
+      </el-menu-item>
+    </el-menu>
+  </div>
 </template>
 
 <script>
   import store from '../store'
   import { siteTitle } from '../strings'
-  import * as UIAPI from '../APIs/ui'
   export default {
     name: 'Navigator',
+    props: {
+      needSearch: String,
+      activeFunc: String
+    },
     computed: {
       title: () => store.state.title,
       checkLoginIn: () => {
@@ -26,29 +48,23 @@
     },
     data() {
       return {
-        name1:'toNavigator',
-        name2:'toHelloWorld',
+        wel:require("@/images/techshare.png"),
         siteTitle,
+        activeIndex: this.activeFunc,
+        input: '',
+        select: "论文",
       }
     },
     methods: {
-      toHome() {
-        UIAPI.updateTitleTo('Home')
-        this.$router.push({ name: 'Home' })
-      },
-      toNavigator() {
-        UIAPI.updateTitleTo('Navigator')
-        this.$router.push({ name: 'Navigator' })
-      },
-      toHelloWorld() {
-        UIAPI.updateTitleTo('HelloWorld')
-        this.$router.push({ name: 'HelloWorld' })
-      }
+
     },
   }
 </script>
 
 
 <style scoped>
-
+  #menu{
+    width: 100%;
+    float: left;
+  }
 </style>

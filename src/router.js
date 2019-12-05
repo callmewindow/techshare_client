@@ -4,8 +4,6 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
   routes: [
     // {
     //   path: '/',
@@ -22,15 +20,31 @@ const router = new Router({
     // },
     {
       path: '/',
+      redirect: 'home'
+    },
+    {
+      path: '/Home',
       name: 'Home',
       component: () =>
         import('./components/Home.vue'),
     },
     {
-      path: '/HelloWorld',
-      name: 'HelloWorld',
+      path: '/User',
+      name: 'User',
       component: () =>
-        import('./components/HelloWorld.vue'),
+        import('./components/User.vue'),
+    },
+    {
+      path: '/Detail',
+      name: 'Detail',
+      component: () =>
+        import('./components/Detail.vue'),
+    },
+    {
+      path: '/Search',
+      name: 'Search',
+      component: () =>
+        import('./components/Search.vue'),
     },
     {
       path: '/Navigator',
@@ -38,8 +52,31 @@ const router = new Router({
       component: () =>
         import('./components/Navigator.vue'),
     },
+    {
+      path: '/wyx',
+      name: 'wyx',
+      component: () =>
+        import('./temp/wyx.vue'),
+    },
+    {
+      path: '/zlx',
+      name: 'zlx',
+      component: () =>
+        import('./temp/zlx.vue'),
+    },
+    {
+      path: '/jcy',
+      name: 'jcy',
+      component: () =>
+        import('./temp/jcy.vue'),
+    },
+    {
+      path: '/zcx',
+      name: 'zcx',
+      component: () =>
+        import('./temp/zcx.vue'),
+    },
   ],
 })
-
 
 export default router

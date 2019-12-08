@@ -2,9 +2,8 @@
   <div>
     <Navigator need-search="true" />
 
-    <div>
-      <el-col :span="1">.</el-col>
-      <el-col :span="5">
+    <el-row :gutter="20" style="width:90%; margin:auto">
+      <el-col :xs="24" :sm="6">
         <el-card class="searchFilter">
           <div class="selectorItem">
             <div class="selectorHeader">
@@ -32,8 +31,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="1">.</el-col>
-      <el-col :span="16" id="searchList">
+      <el-col :xs="24" :sm="18" id="searchList">
         <div v-for="item in items" :key="item.ID">
           <div class="item">
             <el-card shadow="always" class="box-card">
@@ -49,9 +47,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="1">.</el-col>
-    </div>
-
+    </el-row>
   </div>
 </template>
 
@@ -61,7 +57,7 @@ import Navigator from "@/components/Navigator";
 export default {
   name: "test",
   components: {
-    Navigator,
+    Navigator
   },
   data() {
     return {
@@ -197,7 +193,7 @@ export default {
       }
       return value;
     }
-  },
+  }
 };
 </script>
 

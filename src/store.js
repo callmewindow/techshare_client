@@ -3,7 +3,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { siteTitleInFull } from './strings'
 import axios from 'axios'
-import * as ReportAPI from './APIs/report'
 
 Vue.use(Vuex)
 
@@ -77,9 +76,9 @@ export default new Vuex.Store({
         axios.defaults.headers.common = {}
       }
       const loadAdmin = async function() {
-        const adminResponse = await ReportAPI.isCurrentUserAdmin()
-        const isAdmin = adminResponse.data
-        context.commit('updateAdmin', isAdmin)
+        // const adminResponse = await ReportAPI.isCurrentUserAdmin()
+        // const isAdmin = adminResponse.data
+        // context.commit('updateAdmin', isAdmin)
       }
 
       if (payload === undefined) {

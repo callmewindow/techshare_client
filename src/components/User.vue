@@ -79,6 +79,8 @@
 
 <script>
   import Navigator from "@/components/Navigator";
+  //首先引用所需的api过来
+  import * as userAPI from "../APIs/user";
   export default {
     name: "user",
     components: {
@@ -99,8 +101,12 @@
           username:"wyx847590417",
           nickname:"稼轩",
           userEmail:"847590417@qq.com",
-        }
+        },
+        userTemp:{}
       }
+    },
+    activated(){
+      this.getUserInfo();
     },
     methods: {
       getImage( index ) {
@@ -111,6 +117,23 @@
       },
       toExpert() {
 
+      },
+      //定义异步方法
+      async getUserInfo() {
+        //在异常获取中进行
+        try {
+          //传的值需要按照接口的定义来
+          //利用const类型变量接受返回值（这里的返回值就是后端的返回值）
+          const userInfo = await userAPI.getUserInfo(this.userId);
+          //直接整个返回值转移
+          this.userTemp = userInfo;
+          //或者从中提取部分内容
+          //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
+          this.userTemp = userInfo.data;
+        } catch (e) {
+          //出错就利用el的消息提示输出错误
+          this.$message.error('编辑功能暂未开放');
+        }
       }
     }
   }

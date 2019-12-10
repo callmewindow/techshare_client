@@ -41,6 +41,12 @@ const router = new Router({
         import('./components/Detail.vue'),
     },
     {
+      path: '/AddInfo',
+      name: 'AddInfo',
+      component: () =>
+        import('./components/AddInfo.vue'),
+    },
+    {
       path: '/Search',
       name: 'Search',
       component: () =>
@@ -52,6 +58,7 @@ const router = new Router({
       component: () =>
         import('./components/Navigator.vue'),
     },
+
     {
       path: '/wyx',
       name: 'wyx',

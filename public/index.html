@@ -7,7 +7,7 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>technology share for you</title>
   </head>
-  <body style="overflow: scroll !important;">
+  <body style="overflow: auto">
     <noscript>
       <strong>We're sorry but tech_share doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
@@ -15,3 +15,10 @@
     <!-- built files will be auto injected -->
   </body>
 </html>
+<script type="text/javascript">
+  //卑微，el的bug，点击el组件后会导致body的overflow属性变为hidden
+  function watchOverflow(){
+    document.body.style.overflow = "auto";
+  }
+  setInterval(watchOverflow,200)//每过0.2秒执行一次
+</script>

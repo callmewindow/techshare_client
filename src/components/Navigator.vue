@@ -4,7 +4,7 @@
     <el-menu id="menu" :router="true" :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
       <el-menu-item index="Home">
         <el-image
-          style="height: 25px;width: 100px;margin: auto;"
+          style="height: 25px;width: 95px;margin: auto;"
           :src="wel"/>
       </el-menu-item>
 

@@ -3,6 +3,12 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+//捕获同地址跳转的异常
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 const router = new Router({
   routes: [
     // {
@@ -41,7 +47,13 @@ const router = new Router({
     //     import('./components/Expert.vue'),
     // },
     {
-      path: '/Detail',
+      path: '/Login',
+      name: 'LoginTemp',
+      component: () =>
+        import('./components/LoginTemp.vue'),
+    },
+    {
+      path: '/Detail/:id',
       name: 'Detail',
       component: () =>
         import('./components/Detail.vue'),

@@ -8,8 +8,9 @@ import { QS } from './global'
 //如果get出错，与后端确认请求URL的格式
 export const login = (username, password) => {
   return axios({
-    method: 'GET',
-    url: `/api/user/login?username=${username}&password=${password}`
+    method: 'POST',
+    url: `/api/user/login`,
+    data: QS({ username, password}),
   })
 }
 //post方法就将参数放在data中

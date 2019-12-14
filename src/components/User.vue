@@ -6,7 +6,35 @@
       <el-tabs v-model="userFunc" tab-position="left" style="height: auto;">
         <el-tab-pane label="用户信息" name="用户信息">
           <el-card class="infor">
-            <div class="user_title">基本信息</div>
+            <div class="user_title">
+              基本信息
+              <el-link
+                :underline="false"
+                type="warning"
+                style="margin-left: 5px"
+                @click="logoutShow = true"
+              >
+                注销
+              </el-link>
+              <span v-show="logoutShow">
+                <el-link
+                  :underline="false"
+                  type="danger"
+                  style="margin-left: 10px"
+                  @click="logout"
+                >
+                  确认退出
+                </el-link>
+                <el-link
+                  :underline="false"
+                  type="info"
+                  style="margin-left: 10px"
+                  @click="logoutShow = false"
+                >
+                  取消
+                </el-link>
+              </span>
+            </div>
             <div class="user_infor">
               <div class="infor_title">昵称<i class="el-icon-edit edit" @click="nope"></i></div>
               <div class="infor_content">{{user.nickname}}</div>
@@ -35,7 +63,9 @@
                 </span>
               </div>
             </div>
+
             <el-divider></el-divider>
+
             <div class="user_title">注册信息</div>
             <div class="user_infor">
               <div class="infor_title">用户名</div>
@@ -61,16 +91,42 @@
           </el-card>
 
         </el-tab-pane>
-        <el-tab-pane label="使用记录" name="使用记录">
-          <el-card class="infor">
-            <div class="user_title">使用记录</div>
-          </el-card>
+        <el-tab-pane  name="消息中心">
+          <template slot="label">
+            <el-badge :value="this.$store.state.noticeNum" :hidden="this.$store.state.noticeNum === 0" class="item">
+              消息中心
+            </el-badge>
+          </template>
+
+          <el-tabs type="border-card" class="infor" v-model="activeName">
+            <el-tab-pane label="未读消息" name="未读">
+              <div v-show="this.$store.state.noticeNum === 0">暂无新消息</div>
+
+              <div v-show="this.$store.state.noticeNum !== 0">
+                <div style="text-align: left">
+                  <el-link :underline="false" @click="$store.state.noticeNum = 0">全部已读</el-link>
+                </div>
+                <div style="text-align: left;margin-top: 10px">
+                  <div v-for="o in 5" :key="o">
+                    消息{{o}}
+                  </div>
+                </div>
+              </div>
+
+            </el-tab-pane>
+            <el-tab-pane label="已读消息" name="已读">
+              这里是已读消息
+            </el-tab-pane>
+          </el-tabs>
+
         </el-tab-pane>
-        <el-tab-pane  label="？？？？" name="？？？？">
-          <el-card class="infor">
-            ？？？？
-          </el-card>
-        </el-tab-pane>
+
+<!--        <el-tab-pane label="使用记录" name="使用记录">-->
+<!--          <el-card class="infor">-->
+<!--            <div class="user_title">使用记录</div>-->
+<!--          </el-card>-->
+<!--        </el-tab-pane>-->
+
       </el-tabs>
     </div>
     .
@@ -88,24 +144,24 @@
     },
     data() {
       return {
+        activeName:'未读',
         userFunc: "用户信息",
+        logoutShow:false,
         user: {
-          userId:"123",
-          expertId:"234",
           expert:{
             expertName:"王宇轩",
             expertTitle:"码农",
             workplace:"BUAA_Soft",
           },
           userIntro:"When the sky is dark, it means just the beginning",
-          username:"wyx847590417",
-          nickname:"稼轩",
-          userEmail:"847590417@qq.com",
+          username:"username",
+          nickname:"nickname",
+          userEmail:"userEmail",
         },
         userTemp:{}
       }
     },
-    activated(){
+    created(){
       this.getUserInfo();
     },
     methods: {
@@ -114,6 +170,12 @@
       },
       nope() {
         this.$message('编辑功能暂未开放');
+      },
+      logout() {
+        this.$store.state.userId = 'null';
+        this.$message('注销成功');
+        this.$router.push({path: '/Home'});
+
       },
       toExpert() {
 
@@ -124,15 +186,17 @@
         try {
           //传的值需要按照接口的定义来
           //利用const类型变量接受返回值（这里的返回值就是后端的返回值）
-          const userInfo = await userAPI.getUserInfo(this.userId);
+          const userInfo = await userAPI.getUserInfo(this.$store.state.userId);
           //直接整个返回值转移
-          this.userTemp = userInfo;
           //或者从中提取部分内容
           //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
-          this.userTemp = userInfo.data;
+          let userInfoNow = userInfo.data.user_info;
+          this.user.nickname = userInfoNow.nickname;
+          this.user.username = userInfoNow.username;
+          this.user.userEmail = userInfoNow.userEmail;
         } catch (e) {
           //出错就利用el的消息提示输出错误
-          this.$message.error('编辑功能暂未开放');
+          this.$message.error(e.toString());
         }
       }
     }
@@ -147,10 +211,15 @@
   .user_title{
     text-align: left;
     font-weight: bold;
+    line-height: 20px;
   }
   .user_infor{
     margin-top: 10px;
     text-align: left;
+  }
+  .noticeCenter{
+    margin-top: 10px;
+    padding-bottom: 20px;
   }
   .edit{
     margin-left: 5px;

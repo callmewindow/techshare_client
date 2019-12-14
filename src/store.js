@@ -10,7 +10,8 @@ export default new Vuex.Store({
   state: {
     title: siteTitleInFull,
     jwkToken: 'null',
-    username: 'null',
+    userId: '5df4e072a1f245ecad7af28f',
+    noticeNum: 10,
     avatarUrl: null,
     navImg: '',
     snackbar: {

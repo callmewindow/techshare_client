@@ -1,58 +1,70 @@
 <template>
-  <div>
-    <Navigator need-search="true" />
+  <el-card>
+    <Navigator active-func="Search" />
 
-    <el-row :gutter="20" style="width:90%; margin:auto">
-      <el-col :xs="24" :sm="6">
-        <el-card class="searchFilter">
-          <div class="selectorItem">
-            <div class="selectorHeader">
-              <div class="selectorHeaderPoint"></div>
-              <div class="selectorHeaderText">分类</div>
-              <el-button
-                size="small"
-                type="primary"
-                round
-                @click="getCheckedNodes"
-                class="selectorBtn"
-              >过滤</el-button>
-            </div>
-            <div class="selector">
-              <el-tree
-                :data="selectorData"
-                show-checkbox
-                default-expand-all
-                node-key="id"
-                ref="tree"
-                highlight-current
-                :props="defaultProps"
-              ></el-tree>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :sm="18" id="searchList">
-        <div v-for="item in items" :key="item.ID">
-          <div class="item">
-            <el-card shadow="always" class="box-card">
-              <div slot="header" class="clearfix">
-                <span id="titleText" @click="toDetail">{{item.Title | titleEllipsis}}</span>
+    <el-card shadow="never" style="width:90%; margin: auto;">
+      <el-row :gutter="20">
+        <el-col :sm="24" :md="6">
+          <el-card class="searchFilter">
+            <div class="selectorItem">
+              <div class="selectorHeader">
+                <div class="selectorHeaderPoint"></div>
+                <div class="selectorHeaderText">分类</div>
+                <el-button
+                  size="small"
+                  type="primary"
+                  round
+                  @click="getCheckedNodes"
+                  class="selectorBtn"
+                >过滤</el-button>
               </div>
-              <div class="textItem" id="informationText">{{item.Information | informationEllipsis}}</div>
-              <div class="textItem" id="authorText">作者：{{item.Author | authorEllipsis}}</div>
-              <div class="textItem" id="quoteNumText">被引量：{{item.QuoteNum}}</div>
-              <div class="textItem" id="resourceText">来源：{{item.Resource | resourceEllipsis}}</div>
-            </el-card>
-            <el-divider></el-divider>
+              <div class="selector">
+                <el-tree
+                  :data="selectorData"
+                  show-checkbox
+                  default-expand-all
+                  node-key="id"
+                  ref="tree"
+                  highlight-current
+                  :props="defaultProps"
+                ></el-tree>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+
+        <el-col :sm="24" :md="18" id="searchList">
+          <el-input placeholder="请输入内容" v-model="searchInput" class="input-with-select">
+            <el-select v-model="select" style="width: 80px" slot="prepend">
+              <el-option label="论文" value="论文"></el-option>
+              <el-option label="专利" value="专利"></el-option>
+              <el-option label="专家" value="专家"></el-option>
+            </el-select>
+            <el-button slot="append" icon="el-icon-search" @click="searchContent"></el-button>
+          </el-input>
+          <div v-for="item in items" :key="item.ID">
+            <div class="eachItem">
+              <el-card shadow="always" class="box-card">
+                <div slot="header" class="clearfix">
+                  <span id="titleText" @click="toDetail(item.id)">{{item.Title | titleEllipsis}}</span>
+                </div>
+                <div class="textItem" id="informationText">{{item.Information | informationEllipsis}}</div>
+                <div class="textItem" id="authorText">作者：{{item.Author | authorEllipsis}}</div>
+                <div class="textItem" id="quoteNumText">被引量：{{item.QuoteNum}}</div>
+                <div class="textItem" id="resourceText">来源：{{item.Resource | resourceEllipsis}}</div>
+              </el-card>
+              <el-divider></el-divider>
+            </div>
           </div>
-        </div>
-      </el-col>
-    </el-row>
-  </div>
+        </el-col>
+      </el-row>
+    </el-card>
+  </el-card>
 </template>
 
 <script>
 import Navigator from "@/components/Navigator";
+import * as globalAPI from "../APIs/global";
 
 export default {
   name: "test",
@@ -61,6 +73,8 @@ export default {
   },
   data() {
     return {
+      typeid: 2,
+      select: "论文",
       searchInput: "",
       selectorData: [
         {
@@ -70,16 +84,6 @@ export default {
             {
               id: 4,
               label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
             }
           ]
         },
@@ -97,24 +101,10 @@ export default {
             }
           ]
         },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
       ],
       items: [
         {
-          ID: 1,
+          id: '111',
           Title:
             "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
           Information:
@@ -125,7 +115,7 @@ export default {
             "Taylor & Francis  /  Europe PMC  /  NCBI  /  ganino.com  /  electronicsandbook..."
         },
         {
-          ID: 2,
+          id: '222',
           Title: "The neurobiology of learning and memory",
           Information:
             'Science , 233 , 941 – 947 .R. F. Thompson, "The Neurobiology of learning and memory," Science, vol. 233, pp. 941-947, 1986.Thompson, R. F. ( 1986 ): The neurobiology of learning and memory . Science , 233 : 941 –...',
@@ -134,7 +124,7 @@ export default {
           Resource: "Europe PMC  /  NCBI  /  Cell Press  /  JSTOR  /  ERIC"
         },
         {
-          ID: 3,
+          id: '333',
           Title:
             "Replication of the B19 parvovirus in human bone marrow cell cultures",
           Information:
@@ -151,17 +141,71 @@ export default {
       }
     };
   },
+  created() {
+    this.initialSearch();
+  },
   methods: {
+    initialSearch() {
+      //搜索类型
+      this.typeid = globalAPI.getUrlKey('typeid');
+      //搜索内容
+      this.searchInput = globalAPI.getUrlKey('content');
+      if(this.searchInput == null){
+        //没有搜索内容或者类型不标准直接返回
+        return ;
+      }
+      switch (this.typeid) {
+        case '1':
+          this.select = "专家";
+          //调用搜索专家的函数
+          break;
+        case '2':
+          this.select = "论文";
+          //调用搜索论文的函数
+          break;
+        case '4':
+          this.select = "专利";
+          //调用搜索专利的函数
+          break;
+        default:
+          //类型不标准，不进行搜索即可
+          window.console.log('不进行搜索');
+          break;
+      }
+      //调试用
+      window.console.log(this.searchInput);
+      window.console.log(this.select);
+      window.console.log(this.typeid);
+    },
     getCheckedNodes() {
       // eslint-disable-next-line no-console
       console.log(this.$refs.tree.getCheckedNodes(true, false));
     },
-    viewSearchInput() {
-      // eslint-disable-next-line no-console
-      console.log(this.$data.searchInput);
+    searchContent() {
+      //搜索就相当于跳转到当前页面，借助created方法内容进行搜索
+      //百度貌似就是用的这种方法
+      switch (this.select) {
+        case '专家':
+          this.typeid = '1';
+          break;
+        case '论文':
+          this.typeid = '2';
+          break;
+        case '专利':
+          this.typeid = '4';
+          break;
+      }
+      //产生新的链接地址，可通过点击搜索了解工作原理
+      let searchPath = "/Search/?typeid="+this.typeid+"&content="+this.searchInput;
+      try{
+        this.$router.push({path:searchPath});
+        this.initialSearch();
+      }catch (e) {
+        this.$message('123');
+      }
     },
-    toDetail() {
-      this.$router.push("Detail");
+    toDetail(id) {
+      this.$router.push("Detail/"+id);
     }
   },
   filters: {
@@ -198,9 +242,6 @@ export default {
 </script>
 
 <style>
-.searchFilter {
-  margin-top: 20px;
-}
 
 .selectorItem {
   display: flex;
@@ -227,16 +268,17 @@ export default {
   color: #333333;
 }
 
-#searchList {
-  margin-top: 20px;
+.searchFilter{
+  margin-bottom: 20px;
 }
 
 .selectorBtn {
   margin-left: 50px;
 }
 
-.item {
-  margin-bottom: 20px;
+.eachItem {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .textItem {
   display: flex;

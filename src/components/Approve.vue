@@ -112,6 +112,7 @@ export default {
     handleApprove(row) {
       this.dialogVisible = true;
       window.console.log(row);
+      // 这里根据后面的接口，根据row来决定后续图片的url
       this.applicantImage = require("@/images/齐木楠雄1.png");
       this.applicantImageList.splice(0, this.applicantImageList.length);
       this.applicantImageList.push(this.applicantImage);

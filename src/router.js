@@ -76,7 +76,12 @@ const router = new Router({
       component: () =>
         import('./components/Navigator.vue'),
     },
-
+    {
+      path: '/Approve',
+      name: 'Approve',
+      component: () =>
+        import('./components/Approve.vue'),
+    },
     {
       path: '/wyx',
       name: 'wyx',

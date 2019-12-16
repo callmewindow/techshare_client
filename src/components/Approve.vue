@@ -37,6 +37,7 @@
     <div class="dialogPart">
       <el-dialog title="审批申请" :visible.sync="dialogVisible" width="50%">
         <div style="font-size:1.20em">证明图片资料</div>
+        <div style="font-size:1.05em; color:#777">（点击查看大图）</div>
         <div class="demo-image__preview">
           <el-image
             style="width: 80%; height: 80%"
@@ -45,25 +46,33 @@
             :preview-src-list="applicantImageList"
           ></el-image>
         </div>
-        <div style="font-size:1.1em; color:#777">（点击查看大图）</div>
+        <br />
+        <el-input
+          type="textarea"
+          :rows="3"
+          placeholder="请输入通过或拒绝的原因"
+          v-model="resultReason"
+          style="width: 80%"
+        ></el-input>
+
         <span slot="footer" class="dialog-footer">
           <el-button
             type="primary"
-            @click="dialogVisible = false"
+            @click="dialogVisible = false, resultReason = ''"
             round
             size="medium"
             style="font-size:1.03em"
           >取 消</el-button>
           <el-button
             type="danger"
-            @click="dialogVisible = false"
+            @click="refuseApply()"
             round
             size="medium"
             style="font-size:1.03em"
           >拒 绝</el-button>
           <el-button
             type="success"
-            @click="dialogVisible = false"
+            @click="passApply()"
             round
             size="medium"
             style="font-size:1.03em"
@@ -75,9 +84,28 @@
 </template>
 
 <script>
+import * as applyAPI from "../APIs/apply";
 export default {
   name: "Approve",
   methods: {
+    //定义异步方法
+    async getAllApplyInfo() {
+      //在异常获取中进行
+      try {
+        //传的值需要按照接口的定义来
+        //利用const类型变量接受返回值（这里的返回值就是后端的返回值）
+        const res = await applyAPI.getAllApplyInfo();
+        //直接整个返回值转移
+        //或者从中提取部分内容
+        //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
+        let allApplyList = res.data.apply;
+        this.applyList = allApplyList;
+        this.flushList();
+      } catch (e) {
+        //出错就利用el的消息提示输出错误
+        this.$message.error(e.toString());
+      }
+    },
     flushList() {
       // 清空展示数组
       this.visibleList.splice(0, this.visibleList.length);
@@ -111,15 +139,24 @@ export default {
     },
     handleApprove(row) {
       this.dialogVisible = true;
-      window.console.log(row);
+      this.applyId = row._id;
       // 这里根据后面的接口，根据row来决定后续图片的url
-      this.applicantImage = require("@/images/齐木楠雄1.png");
+      this.applicantImage = row.applicantImage;
       this.applicantImageList.splice(0, this.applicantImageList.length);
       this.applicantImageList.push(this.applicantImage);
+    },
+    refuseApply() {
+      applyAPI.applyRefused(this.applyId, this.resultReason);
+      this.dialogVisible = false;
+    },
+    passApply() {
+      applyAPI.applyPassed(this.applyId, this.resultReason);
+      this.dialogVisible = false;
     }
   },
   created: function() {
-    this.flushList();
+    // 获得applyList
+    this.getAllApplyInfo();
   },
   data() {
     return {
@@ -127,30 +164,9 @@ export default {
       dialogVisible: false,
       applicantImage: "",
       applicantImageList: [],
-      applyList: [
-        {
-          _id: "5df48bc4c2df6a4bf5e94680",
-          applicant: "5df0c8c5b4ef5d232026c857",
-          resultType: "unhandled",
-          applicantImage: "image1",
-          applicantWorkplace: "workplace1",
-          applicantTitle: "title1",
-          applicantName: "expert1",
-          applicantEmail: "expert1@gmail.com",
-          applyTime: "2019-12-14 07:14:11"
-        },
-        {
-          _id: "5df48bc4c2df6a4bf5e94680",
-          applicant: "5df0c8c5b4ef5d232026c857",
-          resultType: "unhandled",
-          applicantImage: "image1",
-          applicantWorkplace: "workplace1",
-          applicantTitle: "title1",
-          applicantName: "expert1",
-          applicantEmail: "expert1@gmail.com",
-          applyTime: "2019-12-14 07:14:11"
-        }
-      ],
+      applyId: "",
+      resultReason: "",
+      applyList: [],
       visibleList: []
     };
   }

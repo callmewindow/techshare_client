@@ -48,7 +48,10 @@
                 <div slot="header" class="clearfix">
                   <span id="titleText" @click="toDetail(item.id)">{{item.Title | titleEllipsis}}</span>
                 </div>
-                <div class="textItem" id="informationText">{{item.Information | informationEllipsis}}</div>
+                <div
+                  class="textItem"
+                  id="informationText"
+                >{{item.Information | informationEllipsis}}</div>
                 <div class="textItem" id="authorText">作者：{{item.Author | authorEllipsis}}</div>
                 <div class="textItem" id="quoteNumText">被引量：{{item.QuoteNum}}</div>
                 <div class="textItem" id="resourceText">来源：{{item.Resource | resourceEllipsis}}</div>
@@ -65,6 +68,7 @@
 <script>
 import Navigator from "@/components/Navigator";
 import * as globalAPI from "../APIs/global";
+import * as searchAPI from "../APIs/search";
 
 export default {
   name: "test",
@@ -76,6 +80,8 @@ export default {
       typeid: 2,
       select: "论文",
       searchInput: "",
+      // 暂存，后端完善后分析data
+      searchRes: "",
       selectorData: [
         {
           id: 1,
@@ -83,7 +89,7 @@ export default {
           children: [
             {
               id: 4,
-              label: "二级 1-1",
+              label: "二级 1-1"
             }
           ]
         },
@@ -100,11 +106,11 @@ export default {
               label: "二级 2-2"
             }
           ]
-        },
+        }
       ],
       items: [
         {
-          id: '111',
+          id: "111",
           Title:
             "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
           Information:
@@ -115,7 +121,7 @@ export default {
             "Taylor & Francis  /  Europe PMC  /  NCBI  /  ganino.com  /  electronicsandbook..."
         },
         {
-          id: '222',
+          id: "222",
           Title: "The neurobiology of learning and memory",
           Information:
             'Science , 233 , 941 – 947 .R. F. Thompson, "The Neurobiology of learning and memory," Science, vol. 233, pp. 941-947, 1986.Thompson, R. F. ( 1986 ): The neurobiology of learning and memory . Science , 233 : 941 –...',
@@ -124,7 +130,7 @@ export default {
           Resource: "Europe PMC  /  NCBI  /  Cell Press  /  JSTOR  /  ERIC"
         },
         {
-          id: '333',
+          id: "333",
           Title:
             "Replication of the B19 parvovirus in human bone marrow cell cultures",
           Information:
@@ -145,37 +151,59 @@ export default {
     this.initialSearch();
   },
   methods: {
+    async searchByKeyword() {
+      //在异常获取中进行
+      try {
+        //传的值需要按照接口的定义来
+        //利用const类型变量接受返回值（这里的返回值就是后端的返回值）
+        const res = await searchAPI.searchByKeyword(
+          this.typeid,
+          this.searchInput
+        );
+        //直接整个返回值转移
+        //或者从中提取部分内容
+        //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
+        let temp = res.data;
+        this.searchRes = temp;
+      } catch (e) {
+        //出错就利用el的消息提示输出错误
+        this.$message.error(e.toString());
+      }
+    },
     initialSearch() {
       //搜索类型
-      this.typeid = globalAPI.getUrlKey('typeid');
+      this.typeid = globalAPI.getUrlKey("typeid");
       //搜索内容
-      this.searchInput = globalAPI.getUrlKey('content');
-      if(this.searchInput == null){
+      this.searchInput = globalAPI.getUrlKey("content");
+      if (this.searchInput == null) {
         //没有搜索内容或者类型不标准直接返回
-        return ;
+        return;
       }
       switch (this.typeid) {
-        case '1':
+        case "1":
           this.select = "专家";
           //调用搜索专家的函数
+          this.searchByKeyword();
           break;
-        case '2':
+        case "2":
           this.select = "论文";
           //调用搜索论文的函数
+          this.searchByKeyword();
           break;
-        case '4':
+        case "4":
           this.select = "专利";
           //调用搜索专利的函数
+          this.searchByKeyword();
           break;
         default:
           //类型不标准，不进行搜索即可
-          window.console.log('不进行搜索');
+          window.console.log("不进行搜索");
           break;
       }
       //调试用
-      window.console.log(this.searchInput);
-      window.console.log(this.select);
-      window.console.log(this.typeid);
+      // window.console.log(this.searchInput);
+      // window.console.log(this.select);
+      // window.console.log(this.typeid);
     },
     getCheckedNodes() {
       // eslint-disable-next-line no-console
@@ -185,27 +213,28 @@ export default {
       //搜索就相当于跳转到当前页面，借助created方法内容进行搜索
       //百度貌似就是用的这种方法
       switch (this.select) {
-        case '专家':
-          this.typeid = '1';
+        case "专家":
+          this.typeid = "1";
           break;
-        case '论文':
-          this.typeid = '2';
+        case "论文":
+          this.typeid = "2";
           break;
-        case '专利':
-          this.typeid = '4';
+        case "专利":
+          this.typeid = "4";
           break;
       }
       //产生新的链接地址，可通过点击搜索了解工作原理
-      let searchPath = "/Search/?typeid="+this.typeid+"&content="+this.searchInput;
-      try{
-        this.$router.push({path:searchPath});
+      let searchPath =
+        "/Search/?typeid=" + this.typeid + "&content=" + this.searchInput;
+      try {
+        this.$router.push({ path: searchPath });
         this.initialSearch();
-      }catch (e) {
-        this.$message('123');
+      } catch (e) {
+        this.$message("123");
       }
     },
     toDetail(id) {
-      this.$router.push("Detail/"+id);
+      this.$router.push("Detail/" + id);
     }
   },
   filters: {
@@ -242,7 +271,6 @@ export default {
 </script>
 
 <style>
-
 .selectorItem {
   display: flex;
   flex-direction: column;
@@ -268,7 +296,7 @@ export default {
   color: #333333;
 }
 
-.searchFilter{
+.searchFilter {
   margin-bottom: 20px;
 }
 

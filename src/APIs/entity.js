@@ -1,23 +1,19 @@
 import axios from 'axios'
 import { QS } from './global'
 
-// search板块先略过
-
-
 //论文基础
 export const uploadPaper = paper => {
   return axios({
     method: 'POST',
     url: `/api/paper/uploadPaper`,
-    data: QS({ paper }),
+    data: QS({ paper })
   })
 }
 
 export const getPaperInfo = paperId => {
   return axios({
     method: 'GET',
-    url: `/api/paper/getPaperInfo`,
-    data: { paperId },
+    url: `/api/paper/getPaperInfo?paperId=${paperId}`
   })
 }
 
@@ -25,7 +21,7 @@ export const addPaperReading = paperId => {
   return axios({
     method: 'POST',
     url: `/api/paper/uploadPaper`,
-    data: { paperId },
+    data: QS({ paperId })
   })
 }
 
@@ -33,7 +29,7 @@ export const addPaperStar = (userId, paperId) => {
   return axios({
     method: 'POST',
     url: `/api/paper/addPaperStar`,
-    data: { userId,paperId },
+    data: QS({ userId,paperId })
   })
 }
 
@@ -42,15 +38,14 @@ export const uploadPatent = patent => {
   return axios({
     method: 'POST',
     url: `/api/patent/uploadPatent`,
-    data: QS({ patent }),
+    data: QS({ patent })
   })
 }
 
 export const getPatentInfo = patentId => {
   return axios({
     method: 'GET',
-    url: `/api/patent/getPatentInfo`,
-    data: { patentId },
+    url: `/api/patent/getPatentInfo?patentId=${patentId}`
   })
 }
 
@@ -58,7 +53,7 @@ export const addPatentReading = patentId => {
   return axios({
     method: 'POST',
     url: `/api/patent/uploadPatent`,
-    data: { patentId },
+    data: QS({ patentId })
   })
 }
 
@@ -66,6 +61,6 @@ export const addPatentStar = (userId, patentId) => {
   return axios({
     method: 'POST',
     url: `/api/patent/addPatentStar`,
-    data: { userId,patentId },
+    data: QS({ userId,patentId })
   })
 }

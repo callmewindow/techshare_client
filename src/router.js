@@ -35,15 +35,6 @@ const router = new Router({
         import('./components/User.vue'),
     },
     {
-      path: '/Expert',
-      name: 'Expert',
-      component: () =>
-          import('./components/Expert.vue'),
-      meta:{
-        keepAlive:true
-      }
-    },
-    {
       path: '/Detail',
       name: 'Detail',
       component: () =>

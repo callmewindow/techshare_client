@@ -8,7 +8,7 @@
           :src="wel"/>
       </div>
       <div id="input">
-        <el-input placeholder="请输入内容" v-model="input" class="input-with-select">
+        <el-input placeholder="请输入内容" v-model="searchInput" class="input-with-select">
           <el-select v-model="select" style="width: 80px" slot="prepend">
             <el-option label="论文" value="论文"></el-option>
             <el-option label="专利" value="专利"></el-option>
@@ -56,11 +56,12 @@
     data() {
       return {
         wel: require("@/images/techshare.png"),
-        input: '',
+        searchInput: '',
         select: "论文",
+        typeid: '',
         links:[
           {
-            img:require("@/images/techshare.png"),
+            img:require("@/images/齐木楠雄1.png"),
             url:"",
           },
           {
@@ -84,7 +85,7 @@
             url:"",
           },
           {
-            img:require("@/images/齐木楠雄2.png"),
+            img:require("@/images/齐木楠雄3.png"),
             url:"",
           },
           {
@@ -96,7 +97,7 @@
             url:"",
           },
           {
-            img:require("@/images/齐木楠雄2.png"),
+            img:require("@/images/齐木楠雄4.png"),
             url:"",
           },
           {
@@ -115,8 +116,21 @@
         return require("@/images/齐木楠雄"+index+".png");
       },
       toSearch() {
-        this.$router.push("Search");
-      }
+        //搜索就相当于跳转到当前页面，借助created方法内容进行搜索
+        //百度貌似就是用的这种方法
+        switch (this.select) {
+          case '专家':
+            this.typeid = '1';
+            break;
+          case '论文':
+            this.typeid = '2';
+            break;
+          case '专利':
+            this.typeid = '4';
+            break;
+        }
+        this.$router.push({path:"/Search/?typeid="+this.typeid+"&content="+this.searchInput});
+      },
     }
   }
 </script>

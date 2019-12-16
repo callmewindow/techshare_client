@@ -3,6 +3,10 @@ import qs from 'qs'
 export function QS(obj) {
   return qs.stringify(obj)
 }
+export  function getUrlKey(name){
+  // eslint-disable-next-line no-sparse-arrays
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [,""])[1].replace(/\+/g, '%20')) || null
+}
 
 const global = {
   formatDate: date => new Date(date).Format('yyyy-MM-dd hh:mm:ss'),

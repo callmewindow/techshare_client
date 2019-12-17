@@ -28,7 +28,7 @@
                                 标签：
                                 <el-row v-for="(tag) in expert.tags"
                                         :key="tag.key"
-                                        gutter="1"
+                                        :gutter="1"
                                         >
                                     <el-col>
                                     <el-link @click="toTag">{{tag.value}}</el-link>
@@ -103,7 +103,9 @@
                     contents:[{
                         key: 1,
                         value: ''
-                    }]
+                    }],
+                    paperList: [],
+                    patentList: []
                 },
                 expertTemp:{}
 
@@ -125,16 +127,26 @@
                 try {
                     //传的值需要按照接口的定义来
                     //利用const类型变量接受返回值（这里的返回值就是后端的返回值）
+                    //window.console.log(this.$store.state.expertId);
                     const expertInfo = await expertAPI.getExpertInfo(this.$store.state.expertId);
                     //直接整个返回值转移
                     let expertInfoNow = expertInfo.data.expert_info;
                      //或者从中提取部分内容
                     //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
-                    this.expert.name = expertInfoNow.name;
+                    //window.console.log('wrwr');
+                    this.expert.name = expertInfoNow.expertName;
                     this.expert.expertEmail = expertInfoNow.expertEmail;
+                    this.expert.num_paper = expertInfoNow.paperNum;
+                    this.expert.num_paper = expertInfoNow.patentNum;
+                    this.expert.tags = expertInfoNow.expertTags;
+                    this.expert.workplace = expertInfoNow.workplace;
+                    this.expert.paperList = expertInfoNow.paperList;
+                    this.expert.patentList = expertInfoNow.patentList;
+
 
                 } catch (e) {
                     //出错就利用el的消息提示输出错误
+                    window.console.log('asd');
                     this.$message.error(e.toString());
                 }
             },

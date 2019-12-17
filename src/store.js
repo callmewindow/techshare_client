@@ -11,6 +11,7 @@ export default new Vuex.Store({
     title: siteTitleInFull,
     jwkToken: 'null',
     userId: '5df4e072a1f245ecad7af28f',
+    expertId:'5df48bc4c2df6a4bf5e94681',
     noticeNum: 10,
     avatarUrl: null,
     navImg: '',

@@ -19,10 +19,10 @@ export const getExpertPatent = (expertId) => {
         url: `/api/patent/getAllPatentByExpertId?expertId=${expertId}`
     })
 }
-export const getExpertIntro = (expertId,newExpertIntro) => {
+export const editExpertIntro = (expertId,newExpertIntro) => {
     return axios({
         method: 'POST',
-        url: `/api/expert/editExpertIntro=${expertId}`,
+        url: `/api/expert/editExpertIntro`,
         data:QS({expertId,newExpertIntro})
     })
 }

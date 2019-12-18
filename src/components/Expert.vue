@@ -30,7 +30,8 @@
                                  <el-link
                                          v-for="(tag) in expert.tags"
                                          :key="tag.key"
-                                         @click="toTag(tag.value)" >' {{tag.value}} '
+                                         @click="toTag(tag.value)"
+                                         class="link">' {{tag.value}} '
                                  </el-link>
                             </div>
 
@@ -47,6 +48,9 @@
         <el-divider content-position="center" >专家简介</el-divider>
         <div  class="expertIntro" :span="10">{{expert.Intro}}
         </div>
+        <div>
+            <i class="el-icon-edit edit" style="float: right; padding: 3px 0;size: 50px" @click="toDetail"></i>
+        </div>
 
         <el-divider content-position="center" >研究成果</el-divider>
             <!--成果展示-->
@@ -57,7 +61,7 @@
                         <div class="eachItem">
                             <el-card shadow="always" class="box-card">
                                 <div slot="header" class="clearfix">
-                                    <el-link id="titleText_paper" @click="toDetail(item.id)">{{item.Title | titleEllipsis}}</el-link>
+                                    <el-link id="titleText_paper" @click="toDetail(item.id)" class="link">{{item.Title | titleEllipsis}}</el-link>
                                 </div>
                                 <div
                                         class="textItem"
@@ -78,7 +82,7 @@
                         <div class="eachItem">
                             <el-card shadow="always" class="box-card">
                                 <div slot="header" class="clearfix">
-                                    <el-link id="titleText_patent" @click="toDetail(item.id)">{{item.Title | titleEllipsis}}</el-link>
+                                    <el-link id="titleText_patent" @click="toDetail(item.id)" class="link">{{item.Title | titleEllipsis}}</el-link>
                                 </div>
                                 <div
                                         class="textItem"
@@ -102,8 +106,6 @@
 <script>
     import Navigator from "@/components/Navigator";
     import * as expertAPI from "../APIs/expert";
-    import * as searchAPI from "../APIs/search";
-    //import * as globalAPI from "../APIs/global";
 
     export default {
         name: "Expert",
@@ -174,7 +176,17 @@
                             Resource:
                                 "BMJ  /  JSTOR  /  Oxford Univ Press  /  Europe PMC  /  NCBI"
                         }],
-                    patentList: []
+                    patentList: [{
+                        id: "111",
+                        Title:
+                            "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
+                        Information:
+                            "Science , 233 , 859 – 866 .Coussens L, Parker PJ, Rhee L, Yang-Feng TL, Chen E, Waterfield MD, Francke U, Ullrich A (1986) Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular",
+                        Author: "L Coussens ， PJ Parker ， L Rhee ， ... -  《Science》 ",
+                        QuoteNum: 1712,
+                        Resource:
+                            "Taylor & Francis  /  Europe PMC  /  NCBI  /  ganino.com  /  electronicsandbook..."
+                    }]
                 },
                 expertTemp:{},
 
@@ -189,7 +201,7 @@
         created(){
             //alert('sdfffqffqfqw');
             this.getExpertInfo();
-            this.initialSearch();
+            this.getFruit();
         },
         methods:{
             setSelectPaper(){
@@ -222,8 +234,8 @@
                     this.expert.num_paper = expertInfoNow.patentNum;
                     this.expert.tags = expertInfoNow.expertTags;
                     this.expert.workplace = expertInfoNow.workplace;
-                    this.expert.paperList = expertInfoNow.paperList;
-                    this.expert.patentList = expertInfoNow.patentList;
+                    //this.expert.paperList = expertInfoNow.paperList;
+                    //this.expert.patentList = expertInfoNow.patentList;
 
 
                 } catch (e) {
@@ -232,89 +244,33 @@
                     this.$message.error(e.toString());
                 }
             },
-            async searchByKeyword(typeid,keyword) {
-                //在异常获取中进行
+            async getFruit() {
                 try {
                     //传的值需要按照接口的定义来
                     //利用const类型变量接受返回值（这里的返回值就是后端的返回值）
-                    const res = await searchAPI.searchByKeyword(typeid,keyword);
+                    const res_paper = await expertAPI.getExpertPaper(this.$store.state.expertId);
                     //直接整个返回值转移
                     //或者从中提取部分内容
                     //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
-                    let temp = res.data;
-                    this.searchRes = temp;
+                    let temp_paper = res_paper.data;
+                    this.searchRes = temp_paper;
+
+                    const res_patent = await expertAPI.getExpertPatent(this.$store.state.expertId);
+                    //直接整个返回值转移
+                    //或者从中提取部分内容
+                    //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
+                    let temp_patent = res_patent.data;
+                    this.searchRes = temp_patent;
+
                 } catch (e) {
                     //出错就利用el的消息提示输出错误
                     this.$message.error(e.toString());
                 }
             },
-            async initialSearch() {
-                //搜索类型
-                //this.typeid = globalAPI.getUrlKey("typeid");
-                //搜索内容
-                //this.searchInput = globalAPI.getUrlKey("content");
-                //if (this.searchInput == null) {
-                    //没有搜索内容或者类型不标准直接返回
-                //    return;
-                //}
-                this.searchByKeyword(2,this.name);
-                this.searchByKeyword(4,this.name);
-
-                /*this.searchByKeyword();
-                switch (this.typeid) {
-                    case "1":
-                        this.select = "专家";
-                        //调用搜索专家的函数
-                        this.searchByKeyword();
-                        break;
-                    case "2":
-                        this.select = "论文";
-                        //调用搜索论文的函数
-                        this.searchByKeyword();
-                        break;
-                    case "4":
-                        this.select = "专利";
-                        //调用搜索专利的函数
-                        this.searchByKeyword();
-                        break;
-                    default:
-                        //类型不标准，不进行搜索即可
-                        window.console.log("不进行搜索");
-                        break;
-                }*/
-                //调试用
-                // window.console.log(this.searchInput);
-                // window.console.log(this.select);
-                // window.console.log(this.typeid);
-            },
             getCheckedNodes() {
                 // eslint-disable-next-line no-console
                 console.log(this.$refs.tree.getCheckedNodes(true, false));
             },
-            /*searchContent() {
-                //搜索就相当于跳转到当前页面，借助created方法内容进行搜索
-                //百度貌似就是用的这种方法
-                switch (this.select) {
-                    case "专家":
-                        this.typeid = "1";
-                        break;
-                    case "论文":
-                        this.typeid = "2";
-                        break;
-                    case "专利":
-                        this.typeid = "4";
-                        break;
-                }
-                //产生新的链接地址，可通过点击搜索了解工作原理
-                let searchPath =
-                    "/Search/?typeid=" + this.typeid + "&content=" + this.searchInput;
-                try {
-                    this.$router.push({ path: searchPath });
-                    this.initialSearch();
-                } catch (e) {
-                    this.$message(e.toString());
-                }
-            },*/
             toDetail(id) {
                 this.$router.push("Detail/" + id);
             }
@@ -390,6 +346,9 @@
     }
     .expertIntro{
         text-align: center;
+    }
+    .link{
+        font-size: 15px;
     }
     #titleText {
         color: #409eff;

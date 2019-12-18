@@ -44,9 +44,8 @@
 
             </div>
             <!--论文专利数量-->
-        <el-divider content-position="center" >信息展示</el-divider>
-        <div>
-
+        <el-divider content-position="center" >专家简介</el-divider>
+        <div  class="expertIntro" :span="10">{{expert.Intro}}
         </div>
 
         <el-divider content-position="center" >研究成果</el-divider>
@@ -126,6 +125,8 @@
                     expertId:'2424',
                     expertEmail:'affa@buaa.edu.cn',
                     workplace: 'BUAA',
+                    Intro:"林士谔（1913-1987）自动控制学家。广东平远人，1935年毕业于上海交通大学电机系。1939年获美国马萨诸塞理工学院航空系航空工程博士学位。曾任成都航空机械学校高级教官，成都航空研究院研究员，厦门大学教授、系主任。北京航空航天大学以及我国航空自动控制学科和陀螺惯导学科的奠基人。在航空陀螺仪表与惯性导航方面有较深研究。" +
+                        "林士谔（1913-1987）自动控制学家。广东平远人，1935年毕业于上海交通大学电机系。1939年获美国马萨诸塞理工学院航空系航空工程博士学位。曾任成都航空机械学校高级教官，成都航空研究院研究员，厦门大学教授、系主任。北京航空航天大学以及我国航空自动控制学科和陀螺惯导学科的奠基人。在航空陀螺仪表与惯性导航方面有较深研究。",
                     tags:[{
                         key: 1,
                         value: '计算机科学'
@@ -386,6 +387,9 @@
         display: flex;
         text-align: left;
         margin-bottom: 20px;
+    }
+    .expertIntro{
+        text-align: center;
     }
     #titleText {
         color: #409eff;

@@ -42,21 +42,115 @@
             </el-select>
             <el-button slot="append" icon="el-icon-search" @click="searchContent"></el-button>
           </el-input>
-          <div v-for="item in items" :key="item.ID">
-            <div class="eachItem">
-              <el-card shadow="always" class="box-card">
-                <div slot="header" class="clearfix">
-                  <span id="titleText" @click="toDetail(item.id)">{{item.Title | titleEllipsis}}</span>
-                </div>
-                <div
-                  class="textItem"
-                  id="informationText"
-                >{{item.Information | informationEllipsis}}</div>
-                <div class="textItem" id="authorText">作者：{{item.Author | authorEllipsis}}</div>
-                <div class="textItem" id="quoteNumText">被引量：{{item.QuoteNum}}</div>
-                <div class="textItem" id="resourceText">来源：{{item.Resource | resourceEllipsis}}</div>
-              </el-card>
-              <el-divider></el-divider>
+
+          <div v-if="typeid == 1">
+            <div v-for="expert in expertList" :key="expert._id">
+              <div class="eachItem">
+                <el-card shadow="always" class="box-card">
+                  <!--姓名-->
+                  <div slot="header" class="clearfix">
+                    <span id="titleText" @click="toDetail(expert._id)">{{expert.expertName}}</span>
+                  </div>
+                  <!--领域-->
+                  <div class="textItem">
+                    <span>
+                      所属领域：
+                      <span v-for="(tag,index) in expert.expertTags" :key="index">
+                        <span v-if="index == 0">{{tag}}</span>
+                        <span v-else>,{{tag}}</span>
+                      </span>
+                    </span>
+                  </div>
+                  <!--论文数-->
+                  <div class="textItem">{{expert.paperNum}}</div>
+                  <!--专利数-->
+                  <div class="textItem">{{expert.patentNum}}</div>
+                </el-card>
+                <el-divider></el-divider>
+              </div>
+            </div>
+          </div>
+
+          <div v-else-if="typeid == 2">
+            <div v-for="paper in paperList" :key="paper._id">
+              <div class="eachItem">
+                <el-card shadow="always" class="box-card">
+                  <!--标题-->
+                  <div slot="header" class="clearfix">
+                    <span
+                      id="titleText"
+                      @click="toDetail(paper._id)"
+                    >{{paper.paperTitle | paperTitleEllipsis}}</span>
+                  </div>
+                  <!--标签-->
+                  <div class="textItem">
+                    <span>
+                      标签：
+                      <span v-for="(tag,index) in paper.paperTags" :key="index">
+                        <span v-if="index == 0">{{tag}}</span>
+                        <span v-else>,{{tag}}</span>
+                      </span>
+                    </span>
+                  </div>
+                  <!--摘要-->
+                  <div class="textItem">摘要：{{paper.paperAbstract | paperAbstractEllipsis}}</div>
+                  <!--作者-->
+                  <div class="textItem">
+                    <span>
+                      作者：
+                      <span v-for="(author,index) in paper.author" :key="index">
+                        <span v-if="index == 0">{{author}}</span>
+                        <span v-else>,{{author}}</span>
+                      </span>
+                    </span>
+                  </div>
+                  <!--被引量-->
+                  <div class="textItem">被引量：{{paper.quoteNum}}</div>
+                  <!--时间-->
+                  <div class="textItem">时间：{{paper.paperTime.split(" ")[0]}}</div>
+                </el-card>
+                <el-divider></el-divider>
+              </div>
+            </div>
+          </div>
+
+          <div v-else-if="typeid == 4">
+            <div v-for="patent in patentList" :key="patent._id">
+              <div class="eachItem">
+                <el-card shadow="always" class="box-card">
+                  <!--专利名字-->
+                  <div slot="header" class="clearfix">
+                    <span id="titleText" @click="toDetail(patent._id)">{{patent.patentName}}</span>
+                  </div>
+                  <!--标签-->
+                  <div class="textItem">
+                    <span>
+                      标签：
+                      <span v-for="(tag,index) in patent.patentTags" :key="index">
+                        <span v-if="index == 0">{{tag}}</span>
+                        <span v-else>,{{tag}}</span>
+                      </span>
+                    </span>
+                  </div>
+                  <!--摘要-->
+                  <div class="textItem">摘要：{{patent.patentAbstract}}</div>
+                  <!--作者-->
+                  <div class="textItem">
+                    <span>
+                      作者：
+                      <span v-for="(author,index) in patent.patentAuthors" :key="index">
+                        <span v-if="index == 0">{{author}}</span>
+                        <span v-else>,{{author}}</span>
+                      </span>
+                    </span>
+                  </div>
+                  <!--机构-->
+                  <div class="textItem">机构：{{patent.patentAgency}}</div>
+                  <!--时间-->
+                  <div class="textItem">时间：{{patent.patentTime.split(" ")[0]}}</div>
+                </el-card>
+                <el-divider></el-divider>
+              </div>
             </div>
           </div>
         </el-col>
@@ -71,7 +165,6 @@ import * as globalAPI from "../APIs/global";
 import * as searchAPI from "../APIs/search";
 
 export default {
-  name: "test",
   components: {
     Navigator
   },
@@ -80,8 +173,7 @@ export default {
       typeid: 2,
       select: "论文",
       searchInput: "",
-      // 暂存，后端完善后分析data
-      searchRes: "",
+      resList: [],
       selectorData: [
         {
           id: 1,
@@ -108,37 +200,55 @@ export default {
           ]
         }
       ],
-      items: [
+      expertList: [
         {
-          id: "111",
-          Title:
-            "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
-          Information:
-            "Science , 233 , 859 – 866 .Coussens L, Parker PJ, Rhee L, Yang-Feng TL, Chen E, Waterfield MD, Francke U, Ullrich A (1986) Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular",
-          Author: "L Coussens ， PJ Parker ， L Rhee ， ... -  《Science》 ",
-          QuoteNum: 1712,
-          Resource:
-            "Taylor & Francis  /  Europe PMC  /  NCBI  /  ganino.com  /  electronicsandbook..."
-        },
+          _id: "",
+          user: "",
+          expertTags: ["", "", ""],
+          achieveIntro: "",
+          expertEmail: "",
+          emailPublicity: "",
+          paperNum: "",
+          patentNum: "",
+          identityImage: "",
+          workplace: "",
+          expertTitle: "",
+          expertName: "",
+          paperList: ["", "", ""],
+          patentList: ["", "", ""]
+        }
+      ],
+      paperList: [
         {
-          id: "222",
-          Title: "The neurobiology of learning and memory",
-          Information:
-            'Science , 233 , 941 – 947 .R. F. Thompson, "The Neurobiology of learning and memory," Science, vol. 233, pp. 941-947, 1986.Thompson, R. F. ( 1986 ): The neurobiology of learning and memory . Science , 233 : 941 –...',
-          Author: "RF Thompson  -  《Science》",
-          QuoteNum: 1385,
-          Resource: "Europe PMC  /  NCBI  /  Cell Press  /  JSTOR  /  ERIC"
-        },
+          _id: "5df774e390a5db2132601a8a",
+          uploadExpert: "5df48bc4c2df6a4bf5e94681",
+          paperTags: ["3214", "3241", "1234"], //
+          DOI: "2342",
+          paperTitle: "1234", //
+          paperTime: "2019-12-09 16:00:00", //
+          paperUrl: "63456",
+          paperAbstract: "4536", //
+          quoteNum: 0, //
+          readNum: 0,
+          starNum: 0,
+          starUser: [],
+          author: ["2314", "456", "643"] //
+        }
+      ],
+      patentList: [
         {
-          id: "333",
-          Title:
-            "Replication of the B19 parvovirus in human bone marrow cell cultures",
-          Information:
-            "Science 233 (4766), 883-886.OZAWA,K., KURTZMAN,G. & YOUNG,N. (1986). Replication of the B19 parvovirus in human bone marrow cell cultures. Science 233, 883-886.Ozawa K, Kurtzman G, Young N. 1986. Replication of the B19 ...",
-          Author: "K Ozawa ， G Kurtzman ， N Young  -  《Science》",
-          QuoteNum: 600,
-          Resource:
-            "BMJ  /  JSTOR  /  Oxford Univ Press  /  Europe PMC  /  NCBI"
+          _id: "5df77a3821c71750263a2c71",
+          uploadExpert: "5df48bc4c2df6a4bf5e94681",
+          patentTags: ["2131", "123", "1231"], //
+          patentName: "231412", //
+          patentNo: "2",
+          patentTime: "2019-12-17 16:00:00", //
+          patentAgency: "buaa", //
+          patentAbstract: "3213", //
+          readNum: 0,
+          starNum: 0,
+          starUser: [],
+          patentAuthors: ["32131", "123123", "1231232"] //
         }
       ],
       defaultProps: {
@@ -163,8 +273,14 @@ export default {
         //直接整个返回值转移
         //或者从中提取部分内容
         //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
-        let temp = res.data;
-        this.searchRes = temp;
+        this.resList = res.data;
+        if (this.typeid == 1) {
+          this.expertList = this.resList;
+        } else if (this.typeid == 2) {
+          this.paperList = this.resList;
+        } else if (this.typeid == 4) {
+          this.patentList = this.resList;
+        }
       } catch (e) {
         //出错就利用el的消息提示输出错误
         this.$message.error(e.toString());
@@ -195,19 +311,11 @@ export default {
           //调用搜索专利的函数
           this.searchByKeyword();
           break;
-        default:
-          //类型不标准，不进行搜索即可
-          window.console.log("不进行搜索");
-          break;
       }
-      //调试用
-      // window.console.log(this.searchInput);
-      // window.console.log(this.select);
-      // window.console.log(this.typeid);
     },
     getCheckedNodes() {
-      // eslint-disable-next-line no-console
-      console.log(this.$refs.tree.getCheckedNodes(true, false));
+      // 此处获得所选的分类值
+      window.console.log(this.$refs.tree.getCheckedNodes(true, false));
     },
     searchContent() {
       //搜索就相当于跳转到当前页面，借助created方法内容进行搜索
@@ -234,32 +342,25 @@ export default {
       }
     },
     toDetail(id) {
-      this.$router.push("Detail/" + id);
+      this.$router.push({ path: "/Detail/" + id });
     }
   },
   filters: {
-    titleEllipsis(value) {
+    paperTitleEllipsis(value) {
       if (!value) return "";
       if (value.length > 100) {
         return value.slice(0, 100) + "...";
       }
       return value;
     },
-    informationEllipsis(value) {
+    paperAbstractEllipsis(value) {
       if (!value) return "";
       if (value.length > 200) {
         return value.slice(0, 200) + "...";
       }
       return value;
     },
-    authorEllipsis(value) {
-      if (!value) return "";
-      if (value.length > 50) {
-        return value.slice(0, 50) + "...";
-      }
-      return value;
-    },
-    resourceEllipsis(value) {
+    paperUrlEllipsis(value) {
       if (!value) return "";
       if (value.length > 70) {
         return value.slice(0, 70) + "...";
@@ -308,6 +409,7 @@ export default {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
 .textItem {
   display: flex;
   text-align: left;
@@ -319,11 +421,6 @@ export default {
   display: flex;
   text-align: left;
   cursor: pointer;
-}
-
-#resourceText {
-  margin-bottom: 0px;
-  color: #909399;
 }
 
 .el-header,

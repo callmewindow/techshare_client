@@ -37,12 +37,15 @@ export const followExpert = (userId,expertId) => {
     return axios({
         method: 'POST',
         url: `/api/user/followExpert?userId=${userId}&expertId=${expertId}`,
+        data: QS({ userId, expertId}),
     })
 }
 export const cancelExpert = (userId,expertId) => {
     return axios({
         method: 'POST',
         url: `/api/user/cancelFollow?userId=${userId}&expertId=${expertId}`,
+        data: QS({ userId, expertId}),
+
     })
 }
 export const checkExpert = (userId,expertId) => {

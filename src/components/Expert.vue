@@ -287,7 +287,7 @@
                 try{
                     const res = await expertAPI.followExpert(this.$store.state.userId,this.$store.state.expertId);
                     let resInfo = res.data;
-                    if(resInfo=="yes") {
+                    if(resInfo.msg=="ok") {
                         this.isfollow = true;
                         this.$message.success("关注成功");
                     }
@@ -302,7 +302,7 @@
                 try{
                     const res = await expertAPI.cancelExpert(this.$store.state.userId,this.$store.state.expertId);
                     let resInfo = res.data;
-                    if(resInfo=="yes") {
+                    if(resInfo.msg=="ok") {
                         this.isfollow = false;
                         this.$message.success("取消关注成功");
 
@@ -319,9 +319,9 @@
                     const follow = await expertAPI.checkExpert(this.$store.state.userId,this.$store.state.expertId);
 
                     let followInfo = follow.data;
-                    if(followInfo=="yes")
+                    if(followInfo.msg=="ok")
                         this.isfollow = true;
-                    else if(followInfo=="no")
+                    else
                         this.isfollow = false;
                 }catch(e){
                     this.$message.error(e.toString());

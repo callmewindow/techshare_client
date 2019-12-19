@@ -31,3 +31,35 @@ export const getUserInfo = (userId) => {
     url: `/api/user/getUserInfo?userId=${userId}`
   })
 }
+
+export const upToAdmin = (userId) => {
+  return axios({
+    method: 'POST',
+    url: `/api/user/upgradeAdmin`,
+    data: QS({userId})
+  })
+}
+
+export const editNick = (userId, newNickname) => {
+  return axios({
+    method: 'POST',
+    url: `/api/user/editNick`,
+    data: QS({userId, newNickname})
+  })
+}
+
+export const editUserIntro = (userId, newUserIntro) => {
+  return axios({
+    method: 'POST',
+    url: `/api/user/editUserIntro`,
+    data: QS({userId, newUserIntro})
+  })
+}
+
+export const editPassword = (userId, newPassword) => {
+  return axios({
+    method: 'POST',
+    url: `/api/user/changePwd`,
+    data: QS({userId, newPassword})
+  })
+}

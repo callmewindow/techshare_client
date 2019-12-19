@@ -2,11 +2,11 @@ import axios from 'axios'
 import { QS } from './global'
 
 //论文基础
-export const uploadPaper = paper => {
+export const uploadPaper = (expertId, paper) => {
   return axios({
     method: 'POST',
     url: `/api/paper/uploadPaper`,
-    data: QS({ paper })
+    data: QS({ expertId, paper })
   })
 }
 

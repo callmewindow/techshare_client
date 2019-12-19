@@ -1,6 +1,20 @@
 import axios from 'axios'
 import { QS } from './global'
 
+export const uploadApply = (expertApply) => {
+  return axios({
+    method: 'POST',
+    url: `/api/expert/uploadApplyInfo`,
+    data: { expertApply }
+  })
+}
+
+export const getApplyState = (userId) => {
+  return axios({
+    method: 'GET',
+    url: `/api/apply/getApplyState?userId=${userId}`,
+  })
+}
 export const getAllApplyInfo = () => {
     return axios({
         method: 'GET',

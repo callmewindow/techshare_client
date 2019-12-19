@@ -8,6 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    frontIP: "http://211.159.161.35",
     title: siteTitleInFull,
     jwkToken: 'null',
     userId: '5df4e072a1f245ecad7af28f',
@@ -47,7 +48,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    updateNotifications() {},
+    updateNotifications() { },
 
     updateNavTitle(context, value) {
       context.commit('updateNavTitle', value)
@@ -76,7 +77,7 @@ export default new Vuex.Store({
         updateAdmin('none')
         axios.defaults.headers.common = {}
       }
-      const loadAdmin = async function() {
+      const loadAdmin = async function () {
         // const adminResponse = await ReportAPI.isCurrentUserAdmin()
         // const isAdmin = adminResponse.data
         // context.commit('updateAdmin', isAdmin)

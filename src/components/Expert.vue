@@ -11,7 +11,9 @@
                         <div>
                             <el-avatar :size="160" :src="wel" id="head_img"></el-avatar>
                         </div>
-                        <el-button  icon="el-icon-star-off" round >关注</el-button>
+                        <el-button  icon="el-icon-star-off" @click="follow" round v-if="isfollow==false">关注</el-button>
+                        <el-button  icon="el-icon-star-off" @click="unfollow" round v-else-if="isfollow==true">已关注</el-button>
+
                     </el-col>
 
                     <el-col :xs="{span:12,offset:0}" :sm="{span:9,offset:0}" :md="{span:7,offset:0}"  :lg="{span:6,offset:0}" :xl="{span:6,offset:0}">
@@ -149,12 +151,14 @@
                 activeNames: ['1','2','3'],
                 activeName_Tab:'first',
 
+                isfollow:false,
+
                 expert:{
                     name:'稼轩',
                     num_patent:'0',
                     num_paper:'0',
                     title:'教授',
-                    expertId:'2424',
+                    expertId:this.$store.state.expertId,
                     expertEmail:'affa@buaa.edu.cn',
                     workplace: 'BUAA',
                     Intro:"林士谔（1913-1987）自动控制学家。广东平远人，1935年毕业于上海交通大学电机系。1939年获美国马萨诸塞理工学院航空系航空工程博士学位。曾任成都航空机械学校高级教官，成都航空研究院研究员，厦门大学教授、系主任。北京航空航天大学以及我国航空自动控制学科和陀螺惯导学科的奠基人。在航空陀螺仪表与惯性导航方面有较深研究。" +
@@ -267,6 +271,7 @@
             //alert('sdfffqffqfqw');
             this.getExpertInfo();
             this.getFruit();
+            this.checkIsFollow();
         },
         methods:{
             setSelectPaper(){
@@ -277,6 +282,50 @@
             },
             handleClick(tab, event) {
                 window.console.log(tab, event);
+            },
+            async follow(){
+                try{
+                    const res = await expertAPI.followExpert(this.$store.state.userId,this.$store.state.expertId);
+                    let resInfo = res.data;
+                    if(resInfo=="yes") {
+                        this.isfollow = true;
+                        this.$message.success("关注成功");
+                    }
+                    else
+                        this.$message.error("关注失败");
+                }
+                catch(e){
+                    this.$message.error(e.toString());
+                }
+            },
+            async unfollow(){
+                try{
+                    const res = await expertAPI.cancelExpert(this.$store.state.userId,this.$store.state.expertId);
+                    let resInfo = res.data;
+                    if(resInfo=="yes") {
+                        this.isfollow = false;
+                        this.$message.success("取消关注成功");
+
+                    }
+                    else
+                        this.$message.error("取消关注失败");
+                }
+                catch(e){
+                    this.$message.error(e.toString());
+                }
+            },
+            async checkIsFollow(){
+                try{
+                    const follow = await expertAPI.checkExpert(this.$store.state.userId,this.$store.state.expertId);
+
+                    let followInfo = follow.data;
+                    if(followInfo=="yes")
+                        this.isfollow = true;
+                    else if(followInfo=="no")
+                        this.isfollow = false;
+                }catch(e){
+                    this.$message.error(e.toString());
+                }
             },
             toTag() {
                 //this.$router.push("Tag");//标签页面
@@ -305,7 +354,7 @@
 
                 } catch (e) {
                     //出错就利用el的消息提示输出错误
-                    window.console.log('asd');
+                    //window.console.log('asd');
                     this.$message.error(e.toString());
                 }
             },

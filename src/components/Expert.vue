@@ -30,11 +30,10 @@
                             <div class="info-content">
                                 标签：
                                  <el-link
-                                         v-for="(tag) in expert.tags"
-                                         :key="tag.key"
+                                         v-for="(tag,index) in expert.tags"
+                                         :key="index"
                                          @click="toTag(tag.value)"
-                                         class="link">' {{tag.value}} '
-                                 </el-link>
+                                         class="link">' {{tag}} '</el-link>
                             </div>
 
                         </div>
@@ -48,11 +47,38 @@
             </div>
             <!--论文专利数量-->
         <el-divider content-position="center" >专家简介</el-divider>
-        <div  class="expertIntro" :span="10">{{expert.Intro}}
+
+        <div class="expertIntro" v-show="!isedit">{{expert.Intro?expert.Intro:noIntro}}</div>
+
+        <div v-show="isedit">
+<!--            <label>-->
+<!--                <textarea style="width: 60%" v-model="expert.newExpertIntro" />-->
+<!--            </label>-->
+            <el-input
+                    type="textarea"
+                    :rows="3"
+                    :autosize="{minRows: 3, maxRows: 6}"
+                    placeholder="请输入内容"
+                    v-model="expert.newExpertIntro"
+                    show-word-limit>
+            </el-input>
+
+            <span>
+                  <el-button  type="text"  @click="editExpertIntro">
+                    保存
+                  </el-button>
+                  <el-button  type="text" @click="isedit = false">
+                    取消
+                  </el-button>
+            </span>
         </div>
         <div>
-            <i class="el-icon-edit edit" style="float: right; padding: 3px 0;size: 50px" @click="toDetail"></i>
+            <i class="el-icon-edit edit" style="float: right; padding: 3px 0;size: 100px" @click="isedit ^= true"></i>
         </div>
+
+<!--        <div>-->
+<!--            <i class="el-icon-edit edit" style="float: right; padding: 3px 0;size: 50px" @click="toDetail"></i>-->
+<!--        </div>-->
 
         <el-divider content-position="center" >研究成果</el-divider>
             <!--成果展示-->
@@ -86,6 +112,7 @@
                                     </span>
                                 </div>
                                 <div class="textItem" id="quoteNumText_paper">被引量：{{item.quoteNum}}</div>
+                                <div class="textItem" id="readNumText_paper">阅读量：{{item.readNum}}</div>
                                 <div class="textItem" id="timeText_paper">时间：{{item.timeNum}}</div>
                                 <!--div class="textItem" id="resourceText_paper">来源：{{item.Resource | resourceEllipsis}}</div-->
                             </el-card>
@@ -122,6 +149,7 @@
                                     </span>
                                 </div>
                                 <div class="textItem" id="quoteNumText_patent">被引量：{{item.quoteNum}}</div>
+                                <div class="textItem" id="readNumText_patent">阅读量：{{item.readNum}}</div>
                                 <div class="textItem" id="timeText_patent">时间：{{item.timeNum}}</div>
                             </el-card>
                             <el-divider></el-divider>
@@ -150,8 +178,8 @@
                 activeIndex: this.activeFunc,
                 activeNames: ['1','2','3'],
                 activeName_Tab:'first',
-
                 isfollow:false,
+                isedit:false,
 
                 expert:{
                     name:'稼轩',
@@ -163,18 +191,11 @@
                     workplace: 'BUAA',
                     Intro:"林士谔（1913-1987）自动控制学家。广东平远人，1935年毕业于上海交通大学电机系。1939年获美国马萨诸塞理工学院航空系航空工程博士学位。曾任成都航空机械学校高级教官，成都航空研究院研究员，厦门大学教授、系主任。北京航空航天大学以及我国航空自动控制学科和陀螺惯导学科的奠基人。在航空陀螺仪表与惯性导航方面有较深研究。" +
                         "林士谔（1913-1987）自动控制学家。广东平远人，1935年毕业于上海交通大学电机系。1939年获美国马萨诸塞理工学院航空系航空工程博士学位。曾任成都航空机械学校高级教官，成都航空研究院研究员，厦门大学教授、系主任。北京航空航天大学以及我国航空自动控制学科和陀螺惯导学科的奠基人。在航空陀螺仪表与惯性导航方面有较深研究。",
-                    tags:[{
-                        key: 1,
-                        value: '计算机科学'
-                        },
-                        {
-                            key: 2,
-                            value: '软件工程'
-                        },
-                        {
-                            key: 3,
-                            value: '工程'
-                        },],
+                    newExpertIntro:'',
+                    noIntro: '介绍下自己吧~以后会有大用哦',
+                    tags:["计算机科学",
+                        "软件工程",
+                        "工程"],
                     contents:[{
                         key: 1,
                         value: ''
@@ -196,6 +217,7 @@
                             "1"
                         ],
                         quoteNum: 1712,
+                        readNum:12313,
                         timeNum: "2019-12-10 16:00:00"
                         },
                         {
@@ -215,6 +237,7 @@
                                 "1"
                             ],
                             quoteNum: 1712,
+                            readNum:12313,
                             timeNum: "2019-12-10 16:00:00"
 
                         },
@@ -235,6 +258,8 @@
                                 "1"
                             ],
                             quoteNum: 1712,
+                            readNum:12313,
+
                             timeNum: "2019-12-10 16:00:00"
 
                         }],
@@ -255,16 +280,12 @@
                             "1"
                         ],
                         quoteNum: 1712,
+                        readNum:12313,
+
                         timeNum: "2019-12-10 16:00:00"
 
                     }],
                 },
-                expertTemp:{},
-
-                searchInput: "",
-                // 暂存，后端完善后分析data
-                searchRes: "",
-
             }
         },
         created(){
@@ -274,12 +295,6 @@
             this.checkIsFollow();
         },
         methods:{
-            setSelectPaper(){
-                this.select="论文";
-            },
-            setSelectPatent(){
-                this.select="专家";
-            },
             handleClick(tab, event) {
                 window.console.log(tab, event);
             },
@@ -287,7 +302,7 @@
                 try{
                     const res = await expertAPI.followExpert(this.$store.state.userId,this.$store.state.expertId);
                     let resInfo = res.data;
-                    if(resInfo.msg=="ok") {
+                    if(resInfo.msg==="ok") {
                         this.isfollow = true;
                         this.$message.success("关注成功");
                     }
@@ -302,7 +317,7 @@
                 try{
                     const res = await expertAPI.cancelExpert(this.$store.state.userId,this.$store.state.expertId);
                     let resInfo = res.data;
-                    if(resInfo.msg=="ok") {
+                    if(resInfo.msg==="ok") {
                         this.isfollow = false;
                         this.$message.success("取消关注成功");
 
@@ -319,7 +334,7 @@
                     const follow = await expertAPI.checkExpert(this.$store.state.userId,this.$store.state.expertId);
 
                     let followInfo = follow.data;
-                    if(followInfo.msg=="ok")
+                    if(followInfo.msg==="ok")
                         this.isfollow = true;
                     else
                         this.isfollow = false;
@@ -330,6 +345,27 @@
             toTag() {
                 //this.$router.push("Tag");//标签页面
             },
+            async editExpertIntro(){
+                if(this.expert.newExpertIntro.length > 300){
+                    this.$message.error('内容过长，应小于300');
+                    return ;
+                }
+                try{
+                    const res = await expertAPI.editExpertIntro(this.$store.state.expertId,this.expert.newExpertIntro);
+
+                    let resInfo = res.data;
+                    if(resInfo.msg==="ok") {
+                        this.expert.Intro = this.newExpertIntro;
+                        this.isedit = false;
+                        this.$message.success('修改成功');
+                    }
+                    else {
+                        this.$message.error('修改失败，请稍后再试');
+                    }
+                }catch(e){
+                    this.$message.error(e.toString());
+                }
+            },
             async getExpertInfo() {
                 //在异常获取中进行
                 try {
@@ -338,7 +374,8 @@
                     //window.console.log(this.$store.state.expertId);
                     const expertInfo = await expertAPI.getExpertInfo(this.$store.state.expertId);
                     //直接整个返回值转移
-                    let expertInfoNow = expertInfo.data.expert_info;
+                    let InfoData = expertInfo.data;
+                    let expertInfoNow = InfoData.expert_info;
                      //或者从中提取部分内容
                     //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
                     //window.console.log('wrwr');
@@ -377,7 +414,6 @@
                     let temp_patent = res_patent.data;
                     //this.searchRes = temp_patent;
                     this.expert.patentList = temp_patent.patentList;
-
 
                 } catch (e) {
                     //出错就利用el的消息提示输出错误

@@ -33,3 +33,21 @@ export const editExpertIntro = (expertId,newExpertIntro) => {
         url: `/api/patent/getAllExpert?expertname=${expertname}`,
     })
 }
+export const followExpert = (userId,expertId) => {
+    return axios({
+        method: 'POST',
+        url: `/api/user/followExpert?userId=${userId}&expertId=${expertId}`,
+    })
+}
+export const cancelExpert = (userId,expertId) => {
+    return axios({
+        method: 'POST',
+        url: `/api/user/cancelFollow?userId=${userId}&expertId=${expertId}`,
+    })
+}
+export const checkExpert = (userId,expertId) => {
+    return axios({
+        method: 'GET',
+        url: `/api/user/checkFollow?userId=${userId}&expertId=${expertId}`,
+    })
+}

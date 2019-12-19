@@ -23,6 +23,13 @@ export const editExpertIntro = (expertId,newExpertIntro) => {
     return axios({
         method: 'POST',
         url: `/api/expert/editExpertIntro`,
-        data:QS({expertId,newExpertIntro})
+        data: QS({expertId, newExpertIntro})
+    })
+}
+//接口还没有
+ export const getAllExpert = (expertname) => {
+    return axios({
+        method: 'GET',
+        url: `/api/patent/getAllExpert?expertname=${expertname}`,
     })
 }

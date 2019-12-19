@@ -61,15 +61,31 @@
                         <div class="eachItem">
                             <el-card shadow="always" class="box-card">
                                 <div slot="header" class="clearfix">
-                                    <el-link id="titleText_paper" @click="toDetail(item.id)" class="link">{{item.Title | titleEllipsis}}</el-link>
+                                    <el-link id="titleText_paper" @click="toDetail(item._id)" class="link">{{item.paperTitle | titleEllipsis}}</el-link>
                                 </div>
+                                <div class="textItem">
+                                    <span>标签：<span v-for="(tag,index) in item.paperTags" :key="index">
+                                    <span v-if="index == 0">{{tag}}</span>
+                                    <span v-else>,{{tag}}</span>
+                                    </span>
+                                    </span>
+                                </div>
+
                                 <div
                                         class="textItem"
                                         id="informationText_paper"
-                                >{{item.Information | informationEllipsis}}</div>
-                                <div class="textItem" id="authorText_paper">作者：{{item.Author | authorEllipsis}}</div>
-                                <div class="textItem" id="quoteNumText_paper">被引量：{{item.QuoteNum}}</div>
-                                <div class="textItem" id="resourceText_paper">来源：{{item.Resource | resourceEllipsis}}</div>
+                                >摘要：{{item.paperAbstract | informationEllipsis}}</div>
+                                <div class="textItem">
+                                    <span>作者：
+                                    <span v-for="(author,index) in item.author" :key="index">
+                                    <span v-if="index == 0">{{author}}</span>
+                                    <span v-else>,{{author}}</span>
+                                    </span>
+                                    </span>
+                                </div>
+                                <div class="textItem" id="quoteNumText_paper">被引量：{{item.quoteNum}}</div>
+                                <div class="textItem" id="timeText_paper">时间：{{item.timeNum}}</div>
+                                <!--div class="textItem" id="resourceText_paper">来源：{{item.Resource | resourceEllipsis}}</div-->
                             </el-card>
                             <el-divider></el-divider>
                         </div>
@@ -82,15 +98,29 @@
                         <div class="eachItem">
                             <el-card shadow="always" class="box-card">
                                 <div slot="header" class="clearfix">
-                                    <el-link id="titleText_patent" @click="toDetail(item.id)" class="link">{{item.Title | titleEllipsis}}</el-link>
+                                    <el-link id="titleText_patent" @click="toDetail(item._id)" class="link">{{item.patentTitle | titleEllipsis}}</el-link>
+                                </div>
+                                <div class="textItem">
+                                    <span>标签：<span v-for="(tag,index) in item.patentTags" :key="index">
+                                    <span v-if="index == 0">{{tag}}</span>
+                                    <span v-else>,{{tag}}</span>
+                                    </span>
+                                    </span>
                                 </div>
                                 <div
                                         class="textItem"
                                         id="informationText_patent"
-                                >{{item.Information | informationEllipsis}}</div>
-                                <div class="textItem" id="authorText_patent">作者：{{item.Author | authorEllipsis}}</div>
-                                <div class="textItem" id="quoteNumText_patent">被引量：{{item.QuoteNum}}</div>
-                                <div class="textItem" id="resourceText_patent">来源：{{item.Resource | resourceEllipsis}}</div>
+                                ><span>摘要：{{item.patentAbstract | informationEllipsis}}</span></div>
+                                <div class="textItem">
+                                    <span>作者：
+                                    <span v-for="(author,index) in item.author" :key="index">
+                                    <span v-if="index == 0">{{author}}</span>
+                                    <span v-else>,{{author}}</span>
+                                    </span>
+                                    </span>
+                                </div>
+                                <div class="textItem" id="quoteNumText_patent">被引量：{{item.quoteNum}}</div>
+                                <div class="textItem" id="timeText_patent">时间：{{item.timeNum}}</div>
                             </el-card>
                             <el-divider></el-divider>
                         </div>
@@ -146,52 +176,87 @@
                         value: ''
                     }],
                     paperList: [{
-                        id: "111",
-                        Title:
+                        _id: "111",
+                        paperTitle:
                             "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
-                        Information:
+                        paperTags: [
+                            "3214",
+                            "3241",
+                            "1234"
+                        ],
+                        paperAbstract:
                             "Science , 233 , 859 – 866 .Coussens L, Parker PJ, Rhee L, Yang-Feng TL, Chen E, Waterfield MD, Francke U, Ullrich A (1986) Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular",
-                        Author: "L Coussens ， PJ Parker ， L Rhee ， ... -  《Science》 ",
-                        QuoteNum: 1712,
-                        Resource:
-                            "Taylor & Francis  /  Europe PMC  /  NCBI  /  ganino.com  /  electronicsandbook..."
-                    },
-                        {
-                            id: "222",
-                            Title: "The neurobiology of learning and memory",
-                            Information:
-                                'Science , 233 , 941 – 947 .R. F. Thompson, "The Neurobiology of learning and memory," Science, vol. 233, pp. 941-947, 1986.Thompson, R. F. ( 1986 ): The neurobiology of learning and memory . Science , 233 : 941 –...',
-                            Author: "RF Thompson  -  《Science》",
-                            QuoteNum: 1385,
-                            Resource: "Europe PMC  /  NCBI  /  Cell Press  /  JSTOR  /  ERIC"
+                        author: [
+                            "4",
+                            "5",
+                            "1"
+                        ],
+                        quoteNum: 1712,
+                        timeNum: "2019-12-10 16:00:00"
                         },
                         {
-                            id: "333",
-                            Title:
-                                "Replication of the B19 parvovirus in human bone marrow cell cultures",
-                            Information:
-                                "Science 233 (4766), 883-886.OZAWA,K., KURTZMAN,G. & YOUNG,N. (1986). Replication of the B19 parvovirus in human bone marrow cell cultures. Science 233, 883-886.Ozawa K, Kurtzman G, Young N. 1986. Replication of the B19 ...",
-                            Author: "K Ozawa ， G Kurtzman ， N Young  -  《Science》",
-                            QuoteNum: 600,
-                            Resource:
-                                "BMJ  /  JSTOR  /  Oxford Univ Press  /  Europe PMC  /  NCBI"
+                            _id: "111",
+                            paperTitle:
+                                "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
+                            paperTags: [
+                                "3214",
+                                "3241",
+                                "1234"
+                            ],
+                            paperAbstract:
+                                "Science , 233 , 859 – 866 .Coussens L, Parker PJ, Rhee L, Yang-Feng TL, Chen E, Waterfield MD, Francke U, Ullrich A (1986) Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular",
+                            author: [
+                                "4",
+                                "5",
+                                "1"
+                            ],
+                            quoteNum: 1712,
+                            timeNum: "2019-12-10 16:00:00"
+
+                        },
+                        {
+                            _id: "111",
+                            paperTitle:
+                                "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
+                            paperTags: [
+                                "3214",
+                                "3241",
+                                "1234"
+                            ],
+                            paperAbstract:
+                                "Science , 233 , 859 – 866 .Coussens L, Parker PJ, Rhee L, Yang-Feng TL, Chen E, Waterfield MD, Francke U, Ullrich A (1986) Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular",
+                            author: [
+                                "4",
+                                "5",
+                                "1"
+                            ],
+                            quoteNum: 1712,
+                            timeNum: "2019-12-10 16:00:00"
+
                         }],
-                    patentList: [{
-                        id: "111",
-                        Title:
+                    patentList:[{
+                        _id: "111",
+                        patentTitle:
                             "Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular signaling pathways",
-                        Information:
+                        patentTags: [
+                            "3214",
+                            "3241",
+                            "1234"
+                        ],
+                        patentAbstract:
                             "Science , 233 , 859 – 866 .Coussens L, Parker PJ, Rhee L, Yang-Feng TL, Chen E, Waterfield MD, Francke U, Ullrich A (1986) Multiple, distinct forms of bovine and human protein kinase C suggest diversity in cellular",
-                        Author: "L Coussens ， PJ Parker ， L Rhee ， ... -  《Science》 ",
-                        QuoteNum: 1712,
-                        Resource:
-                            "Taylor & Francis  /  Europe PMC  /  NCBI  /  ganino.com  /  electronicsandbook..."
-                    }]
+                        author: [
+                            "4",
+                            "5",
+                            "1"
+                        ],
+                        quoteNum: 1712,
+                        timeNum: "2019-12-10 16:00:00"
+
+                    }],
                 },
                 expertTemp:{},
 
-                typeid: 2,
-                select: "",
                 searchInput: "",
                 // 暂存，后端完善后分析data
                 searchRes: "",
@@ -253,14 +318,17 @@
                     //或者从中提取部分内容
                     //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
                     let temp_paper = res_paper.data;
-                    this.searchRes = temp_paper;
+                    this.expert.paperList = temp_paper.paperList;
+                    //this.searchRes = temp_paper;
 
                     const res_patent = await expertAPI.getExpertPatent(this.$store.state.expertId);
                     //直接整个返回值转移
                     //或者从中提取部分内容
                     //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
                     let temp_patent = res_patent.data;
-                    this.searchRes = temp_patent;
+                    //this.searchRes = temp_patent;
+                    this.expert.patentList = temp_patent.patentList;
+
 
                 } catch (e) {
                     //出错就利用el的消息提示输出错误

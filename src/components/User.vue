@@ -63,7 +63,7 @@
                 <!--                <div style="color: #409EFF;cursor: pointer" @click="toExpert">-->
                 <!--                  {{expert.expertName}}-{{expert.workplace}}-->
                 <!--                </div>-->
-                <el-link type="primary" style="margin-left: 0;font-size: 16px" @click="toExpert">{{expert.expertName}}-{{expert.workplace}}</el-link>
+                <el-link type="primary" style="margin-left: 0;font-size: 16px" @click="toExpert">{{expert.workplace}}：{{expert.expertName}}</el-link>
                 <el-link :underline="false" type="success" @click="toUpload">上传文献</el-link>
               </div>
             </div>

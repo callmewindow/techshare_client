@@ -1,189 +1,190 @@
 <template>
   <div class="All">
-    <Navigator active-func="AddInfo" />
-    <el-row>
-      <el-col :span="22" :offset="1">
-        <div class="bg-top font-top">
-          文献上传
-          <el-divider></el-divider>
-        </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-steps :active="page" finish-status="success" space="500px" align-center>
-        <el-step title="基础信息填写" icon="el-icon-edit"></el-step>
-        <el-step title="完整信息填写" icon="el-icon-edit-outline"></el-step>
-        <el-step title="上传完成" icon="el-icon-document-checked"></el-step>
-      </el-steps>
-    </el-row>
-    <el-row>
-      <el-col :span="12" :offset="6">
-        <div class="grid-content bg-white">
-          <el-tabs type="border-card">
-            <el-form :model="Form" :rules="rules" label-width="80px" ref="basicForm">
-              <el-form-item label="文献类型" prop="type" v-if="page===0">
-                <el-radio-group v-model="Form.type" size="medium" name="type">
-                  <el-radio-button
-                    label="paper"
-                    value="paper"
-                    @click.native="resetForm('basicForm')"
-                  >论文</el-radio-button>
-                  <el-radio-button
-                    label="patent"
-                    value="patent"
-                    @click.native="resetForm('basicForm')"
-                  >专利</el-radio-button>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="论文标题" prop="paperTitle" v-if="Form.type==='paper'&&page===0">
-                <el-input v-model="Form.paperTitle" placeholder="在此处填写论文标题"></el-input>
-              </el-form-item>
-              <el-form-item label="论文DOI" prop="DOI" v-if="Form.type==='paper'&&page===0">
-                <el-input v-model="Form.DOI" placeholder="在此处填写论文DOI"></el-input>
-              </el-form-item>
-              <el-form-item label="专利名称" prop="patentName" v-if="Form.type==='patent'&&page===0">
-                <el-input v-model="Form.patentName" placeholder="在此处填写专利名称"></el-input>
-              </el-form-item>
-              <el-form-item label="专利号" prop="patentNo" v-if="Form.type==='patent'&&page===0">
-                <el-input v-model="Form.patentNo" placeholder="在此处填写专利号"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="submitFormBasic('basicForm')" v-if="page===0">下一步</el-button>
-              </el-form-item>
-            </el-form>
-
-            <el-form :model="Form" :rules="rules" ref="Form" label-width="120px" v-if="page===1">
-              <el-form-item label="论文标题" prop="paperTitle" v-if="Form.type==='paper'">
-                <el-input v-model="Form.paperTitle"></el-input>
-              </el-form-item>
-
-              <el-form-item label="专利名" prop="patentName" v-if="Form.type==='patent'">
-                <el-input v-model="Form.patentName"></el-input>
-              </el-form-item>
-
-              <el-form-item label="论文DOI" prop="DOI" v-if="Form.type==='paper'">
-                <el-input v-model="Form.DOI"></el-input>
-              </el-form-item>
-
-              <el-form-item label="专利号" prop="patentNo" v-if="Form.type==='patent'">
-                <el-input v-model="Form.patentNo"></el-input>
-              </el-form-item>
-            </el-form>
-            <el-form :model="Form" :rules="rules" ref="Form" label-width="120px" v-if="page===1">
-              <el-form-item label="发表日期" v-if="Form.type==='paper'" required>
-                <el-col :span="12">
-                  <el-form-item prop="paperTime">
-                    <el-date-picker
-                      type="date"
-                      placeholder="请选择日期"
-                      v-model="Form.paperTime"
-                      style="width: 100%;"
-                    ></el-date-picker>
-                  </el-form-item>
-                </el-col>
-              </el-form-item>
-
-              <el-form-item label="注册日期" v-if="Form.type==='patent'" required>
-                <el-col :span="12">
-                  <el-form-item prop="patentTime">
-                    <el-date-picker
-                      type="date"
-                      placeholder="请选择日期"
-                      v-model="Form.patentTime"
-                      style="width: 100%;"
-                    ></el-date-picker>
-                  </el-form-item>
-                </el-col>
-              </el-form-item>
-
-              <el-form-item label="标签" prop="tags">
-                <el-tag
-                  :key="tag"
-                  v-for="tag in Form.Tags"
-                  closable
-                  :disable-transitions="false"
-                  @close="handleClose(tag)"
-                >{{tag}}</el-tag>
-                <el-input
-                  class="input-new-tag"
-                  v-if="Form.inputVisible"
-                  v-model="Form.inputValue"
-                  ref="saveTagInput"
-                  size="small"
-                  @keyup.enter.native="handleInputConfirm"
-                  @blur="handleInputConfirm"
-                ></el-input>
-                <el-button
-                  class="button-new-tag"
-                  size="small"
-                  @click="showInput"
-                  v-if="this.Form.Tags.length<3"
-                >+ 新标签</el-button>
-              </el-form-item>
-
-              <el-form
-                :model="AuthorsForm"
-                ref="AuthorsForm"
-                label-width="120px"
-                class="demo-dynamic"
-              >
-                <el-form-item
-                  v-for="(author, index) in AuthorsForm.authors"
-                  :label="'第'+toChi(index+1)+'作者'"
-                  :key="author.key"
-                  :prop="'authors[' + index + '].value'"
-                  :rules="[{required: true, message: '作者栏不能为空', trigger: 'blur'}]"
-                >
-                  <el-input v-model="author.value" clearable></el-input>
+    <Navigator />
+    <el-card>
+      <el-row>
+        <el-col :span="22" :offset="1">
+          <div class="bg-top font-top">
+            文献上传
+            <el-divider></el-divider>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-steps :active="page" finish-status="success" space="500px" align-center>
+          <el-step title="基础信息填写" icon="el-icon-edit"></el-step>
+          <el-step title="完整信息填写" icon="el-icon-edit-outline"></el-step>
+          <el-step title="上传完成" icon="el-icon-document-checked"></el-step>
+        </el-steps>
+      </el-row>
+      <el-row>
+        <el-col :span="12" :offset="6">
+          <div class="grid-content bg-white">
+            <el-tabs type="border-card">
+              <el-form :model="Form" :rules="rules" label-width="80px" ref="basicForm">
+                <el-form-item label="文献类型" prop="type" v-if="page===0">
+                  <el-radio-group v-model="Form.type" size="medium" name="type">
+                    <el-radio-button
+                      label="paper"
+                      value="paper"
+                      @click.native="resetForm('basicForm')"
+                    >论文</el-radio-button>
+                    <el-radio-button
+                      label="patent"
+                      value="patent"
+                      @click.native="resetForm('basicForm')"
+                    >专利</el-radio-button>
+                  </el-radio-group>
                 </el-form-item>
-
+                <el-form-item label="论文标题" prop="paperTitle" v-if="Form.type==='paper'&&page===0">
+                  <el-input v-model="Form.paperTitle" placeholder="在此处填写论文标题"></el-input>
+                </el-form-item>
+                <el-form-item label="论文DOI" prop="DOI" v-if="Form.type==='paper'&&page===0">
+                  <el-input v-model="Form.DOI" placeholder="在此处填写论文DOI"></el-input>
+                </el-form-item>
+                <el-form-item label="专利名称" prop="patentName" v-if="Form.type==='patent'&&page===0">
+                  <el-input v-model="Form.patentName" placeholder="在此处填写专利名称"></el-input>
+                </el-form-item>
+                <el-form-item label="专利号" prop="patentNo" v-if="Form.type==='patent'&&page===0">
+                  <el-input v-model="Form.patentNo" placeholder="在此处填写专利号"></el-input>
+                </el-form-item>
                 <el-form-item>
-                  <el-button @click="addAuthor">添加作者</el-button>
-                  <el-button @click.prevent="removeAuthor">删除作者</el-button>
+                  <el-button type="primary" @click="submitFormBasic('basicForm')" v-if="page===0">下一步</el-button>
                 </el-form-item>
               </el-form>
 
-              <el-form-item label="论文摘要" prop="paperAbstract" v-if="Form.type==='paper'">
-                <el-input type="textarea" v-model="Form.paperAbstract"></el-input>
-              </el-form-item>
+              <el-form :model="Form" :rules="rules" ref="Form" label-width="120px" v-if="page===1">
+                <el-form-item label="论文标题" prop="paperTitle" v-if="Form.type==='paper'">
+                  <el-input v-model="Form.paperTitle"></el-input>
+                </el-form-item>
 
-              <el-form-item label="专利摘要" prop="patentAbstract" v-if="Form.type==='patent'">
-                <el-input type="textarea" v-model="Form.patentAbstract"></el-input>
-              </el-form-item>
+                <el-form-item label="专利名" prop="patentName" v-if="Form.type==='patent'">
+                  <el-input v-model="Form.patentName"></el-input>
+                </el-form-item>
 
-              <el-form-item label="URL" prop="paperUrl" v-if="Form.type==='paper'">
-                <el-input v-model="Form.paperUrl" clearable></el-input>
-              </el-form-item>
+                <el-form-item label="论文DOI" prop="DOI" v-if="Form.type==='paper'">
+                  <el-input v-model="Form.DOI"></el-input>
+                </el-form-item>
 
-              <el-form-item>
-                <el-button type="info" @click="back()" v-if="page===1">上一步</el-button>
-                <el-button type="primary" @click="submitFormWhole('Form')" v-if="page===1">确认上传</el-button>
-              </el-form-item>
-            </el-form>
+                <el-form-item label="专利号" prop="patentNo" v-if="Form.type==='patent'">
+                  <el-input v-model="Form.patentNo"></el-input>
+                </el-form-item>
+              </el-form>
+              <el-form :model="Form" :rules="rules" ref="Form" label-width="120px" v-if="page===1">
+                <el-form-item label="发表日期" v-if="Form.type==='paper'" required>
+                  <el-col :span="12">
+                    <el-form-item prop="paperTime">
+                      <el-date-picker
+                        type="date"
+                        placeholder="请选择日期"
+                        v-model="Form.paperTime"
+                        style="width: 100%;"
+                      ></el-date-picker>
+                    </el-form-item>
+                  </el-col>
+                </el-form-item>
 
-            <transition name="el-zoom-in-top">
-              //动态效果
-              <div style="text-align: center; margin-top:80px;" v-show="show">
+                <el-form-item label="注册日期" v-if="Form.type==='patent'" required>
+                  <el-col :span="12">
+                    <el-form-item prop="patentTime">
+                      <el-date-picker
+                        type="date"
+                        placeholder="请选择日期"
+                        v-model="Form.patentTime"
+                        style="width: 100%;"
+                      ></el-date-picker>
+                    </el-form-item>
+                  </el-col>
+                </el-form-item>
+
+                <el-form-item label="标签" prop="tags">
+                  <el-tag
+                    :key="tag"
+                    v-for="tag in Form.Tags"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleClose(tag)"
+                  >{{tag}}</el-tag>
+                  <el-input
+                    class="input-new-tag"
+                    v-if="Form.inputVisible"
+                    v-model="Form.inputValue"
+                    ref="saveTagInput"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirm"
+                    @blur="handleInputConfirm"
+                  ></el-input>
+                  <el-button
+                    class="button-new-tag"
+                    size="small"
+                    @click="showInput"
+                    v-if="this.Form.Tags.length<3"
+                  >+ 新标签</el-button>
+                </el-form-item>
+
+                <el-form
+                  :model="AuthorsForm"
+                  ref="AuthorsForm"
+                  label-width="120px"
+                  class="demo-dynamic"
+                >
+                  <el-form-item
+                    v-for="(author, index) in AuthorsForm.authors"
+                    :label="'第'+toChi(index+1)+'作者'"
+                    :key="author.key"
+                    :prop="'authors[' + index + '].value'"
+                    :rules="[{required: true, message: '作者栏不能为空', trigger: 'blur'}]"
+                  >
+                    <el-input v-model="author.value" clearable></el-input>
+                  </el-form-item>
+
+                  <el-form-item>
+                    <el-button @click="addAuthor">添加作者</el-button>
+                    <el-button @click.prevent="removeAuthor">删除作者</el-button>
+                  </el-form-item>
+                </el-form>
+
+                <el-form-item label="论文摘要" prop="paperAbstract" v-if="Form.type==='paper'">
+                  <el-input type="textarea" v-model="Form.paperAbstract"></el-input>
+                </el-form-item>
+
+                <el-form-item label="专利摘要" prop="patentAbstract" v-if="Form.type==='patent'">
+                  <el-input type="textarea" v-model="Form.patentAbstract"></el-input>
+                </el-form-item>
+
+                <el-form-item label="URL" prop="paperUrl" v-if="Form.type==='paper'">
+                  <el-input v-model="Form.paperUrl" clearable></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-button type="info" @click="back()" v-if="page===1">上一步</el-button>
+                  <el-button type="primary" @click="submitFormWhole('Form')" v-if="page===1">确认上传</el-button>
+                </el-form-item>
+              </el-form>
+
+              <transition name="el-zoom-in-top">
+                //动态效果
+                <div style="text-align: center; margin-top:80px;" v-show="show">
                 <span style="font-size: 40px; color: #409EFF;">
                   上传完成
                   <br />
                 </span>
-                <i
-                  class="el-icon-circle-check"
-                  style="margin-top:15px; margin-bottom:100px;font-size: 40px; color: #409EFF;"
-                ></i>
-              </div>
-            </transition>
-          </el-tabs>
-        </div>
-      </el-col>
-    </el-row>
+                  <i
+                    class="el-icon-circle-check"
+                    style="margin-top:15px; margin-bottom:100px;font-size: 40px; color: #409EFF;"
+                  ></i>
+                </div>
+              </transition>
+            </el-tabs>
+          </div>
+        </el-col>
+      </el-row>
+    </el-card>
   </div>
 </template>
 
 <script>
 import Navigator from "@/components/Navigator";
-import * as userAPI from "../APIs/user";
 import * as entityAPI from "../APIs/entity";
 
 export default {
@@ -413,19 +414,7 @@ export default {
     },
 
     async getUserInfo() {
-      //在异常获取中进行
-      try {
-        //传的值需要按照接口的定义来
-        //利用const类型变量接受返回值（这里的返回值就是后端的返回值）
-        window.console.log(this.userId);
-        const userInfo = await userAPI.getUserInfo(this.userId);
-        window.console.log(userInfo.data.user_info.expert._id);
-        //直接整个返回值转移
-        this.expertId = userInfo.data.user_info.expert._id;
-      } catch (e) {
-        //出错就利用el的消息提示输出错误
-        this.$message.error("获取用户信息失败，请联系管理员");
-      }
+      this.expertId = this.$store.state.expertId;
     },
 
     async uploadPaper() {
@@ -500,9 +489,9 @@ export default {
 }
 
 .font-top {
-  padding-left: 100px;
-  font-size: 35px;
+  font-size: 25px;
   font-family: "微软雅黑", serif;
+  text-align: left;
 }
 
 .el-tag + .el-tag {

@@ -1,7 +1,15 @@
 <template>
-  <div>
+  <el-card>
     <Navigator active-func="Approve" />
     <el-card>
+      <el-row>
+        <el-col :span="22" :offset="1">
+          <div class="bg-top font-top">
+            专家审批
+            <el-divider></el-divider>
+          </div>
+        </el-col>
+      </el-row>
       <div class="titlePart">
         <div class="typeChoose">
           <div>
@@ -86,17 +94,20 @@
           </span>
         </el-dialog>
       </div>
+      <Footer />
     </el-card>
-  </div>
+  </el-card>
 </template>
 
 <script>
 import Navigator from "@/components/Navigator";
 import * as applyAPI from "../APIs/apply";
+import Footer from "@/components/Footer";
 export default {
   name: "Approve",
   components: {
-    Navigator
+    Navigator,
+    Footer,
   },
   data() {
     return {
@@ -125,17 +136,17 @@ export default {
       this.visibleList.splice(0);
       var i;
       // 选择未定
-      if (this.radio == "unhandled") {
+      if (this.radio === "unhandled") {
         for (i = 0; i < this.applyList.length; i++) {
-          if (this.applyList[i].resultType == "unhandled") {
+          if (this.applyList[i].resultType === "unhandled") {
             this.visibleList.push(this.applyList[i]);
           }
         }
       }
       // 已拒绝
-      else if (this.radio == "applyRefused") {
+      else if (this.radio === "applyRefused") {
         for (i = 0; i < this.applyList.length; i++) {
-          if (this.applyList[i].resultType == "Refused") {
+          if (this.applyList[i].resultType === "Refused") {
             this.visibleList.push(this.applyList[i]);
           }
         }
@@ -143,7 +154,7 @@ export default {
       // 已通过
       else {
         for (i = 0; i < this.applyList.length; i++) {
-          if (this.applyList[i].resultType == "Passed") {
+          if (this.applyList[i].resultType === "Passed") {
             this.visibleList.push(this.applyList[i]);
           }
         }
@@ -199,5 +210,15 @@ export default {
 }
 .table {
   width: 80%;
+}
+
+.bg-top {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.font-top {
+  font-size: 25px;
+  font-family: "微软雅黑", serif;
+  text-align: left;
 }
 </style>

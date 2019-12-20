@@ -21,7 +21,6 @@
         <i class="el-icon-s-custom"></i>
       </el-menu-item>
 
-<<<<<<< HEAD
       <el-menu-item v-if="this.$store.state.identity === 'admin'" style="float:right;" @click="toApprove" index="Approve">
         <i class="el-icon-document"></i>
       </el-menu-item>
@@ -30,21 +29,6 @@
 <!--        <i class="el-icon-setting"></i>-->
 <!--      </el-menu-item>-->
 
-=======
-      <!-- 注意逻辑判断是否是管理员，是才显示，同理在approve页面的creat方法也要判断，不然利用路径也能进入 -->
-      <el-menu-item
-        v-if="this.$store.state.identity == 'admin'"
-        style="float:right;"
-        @click="toApprove"
-        index="Approve"
-      >
-        <i class="el-icon-s-custom"></i>
-      </el-menu-item>
-
-      <!--      <el-menu-item style="float:right;" @click="toSetting" index="Setting">-->
-      <!--        <i class="el-icon-setting"></i>-->
-      <!--      </el-menu-item>-->
->>>>>>> refs/remotes/origin/master
     </el-menu>
 
     <el-card shadow="never" id="loginWin" v-if="loginShow === 'yes'">
@@ -84,7 +68,7 @@ export default {
       this.$router.push({ path: "/Approve" });
     },
     toSearch() {
-      this.$router.push({ path: "/Search/?typeid=2&content=" });
+      this.$router.push({ path: "/Search" });
     },
     toUser() {
       if (this.$store.state.userId === "null") {
@@ -95,48 +79,16 @@ export default {
         this.$router.push({ path: "/User" });
       }
     },
-<<<<<<< HEAD
-    methods: {
-      toHome() {
-        this.$router.push({path: '/Home'});
-      },
-      toApprove() {
-        this.$router.push({path: '/Approve'});
-      },
-      toSearch() {
-        this.$router.push({path: '/Search/?typeid=2&content='});
-      },
-      toUser() {
-        if(this.$store.state.userId === 'null')
-        {
-          this.$message('请先登录');
-          this.$router.push({path: '/Login'});
-          return ;
-        }
-        else
-        {
-          this.$router.push({path: '/User'});
-        }
-      },
-      toExpert() {
-        if(this.$store.state.expertId === 'null'){
-          this.$message('暂无专家身份，请进行申请或等待审核');
-          this.$router.push({path: '/ExpertApp'});
-          return ;
-        }
-        this.$router.push({path: '/Expert'});
-      },
-=======
     toExpert() {
-      if (this.$store.state.expertId === "null") {
-        this.$message("暂无专家身份，请进行申请或等待审核");
-        this.$router.push({ path: "/ExpertApp" });
-        return;
+      if(this.$store.state.expertId === 'null'){
+        this.$message('暂无专家身份，请进行申请或等待审核');
+        this.$router.push({path: '/ExpertApp'});
+        return ;
       }
-      this.$router.push({ path: "/Expert" });
->>>>>>> refs/remotes/origin/master
+      this.$router.push({path: '/Expert/'+this.$store.state.expertId});
     }
   }
+
 };
 </script>
 

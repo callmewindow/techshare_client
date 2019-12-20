@@ -1,7 +1,6 @@
 <template>
   <el-card class="All">
     <Navigator active-func="Expert" />
-
     <el-card>
       <el-row>
         <el-col :span="22" :offset="1">
@@ -274,8 +273,7 @@
   }
 
   .font-top {
-    padding-left: 100px;
-    font-size: 35px;
+    font-size: 25px;
     font-family: "微软雅黑", serif;
     text-align: left;
   }

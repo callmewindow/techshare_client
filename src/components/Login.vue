@@ -123,7 +123,7 @@
           const userInfo = await userAPI.login(this.login.username, this.login.password);
           const res = userInfo.data.msg;
           window.console.log(userInfo);
-          if (res == "error") {
+          if (res === "error") {
             this.$message.error('用户名或密码错误');
           } else {
             this.$message({
@@ -143,10 +143,6 @@
               }
               this.$store.state.messageNum = cnt;
             }
-            // this.$store.state.nickname = userInfo.data.user.nickname;
-            // this.$store.state.userEmail = userInfo.data.user.userEmail;
-            // this.$store.state.userIntro = userInfo.data.user.userIntro;
-            // this.$store.state.username = userInfo.data.user.username;
             if(userInfo.data.user.expert){
               this.$store.state.expertId = userInfo.data.user.expert;
             }
@@ -164,11 +160,11 @@
             try {
               const userInfo = await userAPI.register(this.register.username, this.register.nickname, this.register.password, this.register.userEmail);
               const res = userInfo.msg;
-              if (res == "existUsername") {
+              if (res === "existUsername") {
                 this.$message.error('用户名已被注册');
-              } else if (res == "existUserEmail") {
+              } else if (res === "existUserEmail") {
                 this.$message.error('邮箱已被注册');
-              } else if (res == "databaseError") {
+              } else if (res === "databaseError") {
                 this.$message.error('哦豁，数据库错误');
               } else {
                 this.$message({
@@ -176,6 +172,21 @@
                   type: 'success'
                 });
                 this.$store.state.userId = userInfo.data.user._id;
+                this.$store.state.identity = userInfo.data.user.identity;
+                this.$store.state.messages = userInfo.data.user.messages;
+                if(this.$store.state.messages){
+                  let msg = this.$store.state.messages;
+                  let cnt = 0;
+                  for(let i = 0;i<msg.length;i++){
+                    if(msg[i].noticeRead !== 'yes'){
+                      cnt++;
+                    }
+                  }
+                  this.$store.state.messageNum = cnt;
+                }
+                if(userInfo.data.user.expert){
+                  this.$store.state.expertId = userInfo.data.user.expert;
+                }
                 setTimeout(() => {
                   this.$router.push({path: '/Home'});
                 }, 2000);

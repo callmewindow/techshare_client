@@ -49,7 +49,7 @@
                 <el-card shadow="always" class="box-card">
                   <!--姓名-->
                   <div slot="header" class="clearfix">
-                    <span id="titleText" @click="toDetail(expert._id)">{{expert.expertName}}</span>
+                    <span class="titleText" @click="toDetail(expert._id)">{{expert.expertName}}</span>
                   </div>
                   <!--领域-->
                   <div class="textItem">
@@ -80,7 +80,7 @@
                 <el-card shadow="always" class="box-card">
                   <!--标题-->
                   <div slot="header" class="clearfix">
-                    <span id="titleText" @click="toPaperDetail(paper._id)">{{paper.paperTitle}}</span>
+                    <span class="titleText" @click="toPaperDetail(paper._id)">{{paper.paperTitle}}</span>
                   </div>
 
                   <!--摘要-->
@@ -132,7 +132,7 @@
                   <!--专利名字-->
                   <div slot="header" class="clearfix">
                     <span
-                      id="titleText"
+                      class="titleText"
                       @click="toPatentDetail(patent._id)"
                     >{{patent.patentName == undefined ? '(暂无)': patent.patentName}}</span>
                   </div>
@@ -181,8 +181,8 @@
 
           <div v-else-if="typeid == 0" class="typeBox">
             <el-card shadow="always" class="box-card">
-              <div id="emptyRes">
-                <div id="emptyResText">
+              <div class="emptyRes">
+                <div class="emptyResText">
                   <div>搜索结果为空</div>
                 </div>
               </div>
@@ -191,8 +191,8 @@
 
           <div v-else-if="typeid == -1" class="typeBox">
             <el-card shadow="always" class="box-card">
-              <div id="emptyRes">
-                <div id="emptyResText">筛选结果为空</div>
+              <div class="emptyRes">
+                <div class="emptyResText">筛选结果为空</div>
               </div>
             </el-card>
           </div>
@@ -221,6 +221,7 @@
         </el-col>
       </el-row>
     </el-card>
+    <Footer />
   </el-card>
 </template>
 
@@ -228,10 +229,13 @@
 import Navigator from "@/components/Navigator";
 import * as globalAPI from "../APIs/global";
 import * as searchAPI from "../APIs/search";
+import Footer from "@/components/Footer";
 
 export default {
+  name: "Search",
   components: {
-    Navigator
+    Navigator,
+    Footer,
   },
   data() {
     return {
@@ -612,20 +616,20 @@ export default {
   margin-bottom: 10px;
 }
 
-#titleText {
+.titleText {
   color: #409eff;
   display: flex;
   text-align: left;
   cursor: pointer;
 }
 
-#emptyRes {
+.emptyRes {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#emptyResText {
+.emptyResText {
   font-size: 1.2em;
   margin-top: 100px;
   margin-bottom: 100px;

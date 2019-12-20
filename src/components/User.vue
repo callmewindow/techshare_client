@@ -335,7 +335,7 @@
         try {
           const temp = await claimAPI.passClaim(notice.noticePlusContent,notice.noticeContent.split("邮箱为 ")[1]);
           window.console.log(temp);
-		  await this.readNotice(index);
+          await this.readNotice(index);
         } catch (e) {
           this.$message.error(e.toString());
         }
@@ -344,7 +344,7 @@
         try {
           const temp = await claimAPI.refuseClaim(notice.noticePlusContent,notice.noticeContent.split("邮箱为 ")[1]);
           window.console.log(temp);
-		  await this.readNotice(index);
+          await this.readNotice(index);
           await this.getUserInfo();
         } catch (e) {
           this.$message.error(e.toString());

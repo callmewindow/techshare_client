@@ -23,7 +23,7 @@
 
       <!-- 注意逻辑判断是否是管理员，是才显示，同理在approve页面的creat方法也要判断，不然利用路径也能进入 -->
       <el-menu-item
-        v-if="this.$store.state.identity == ''"
+        v-if="this.$store.state.identity == 'admin'"
         style="float:right;"
         @click="toApprove"
         index="Approve"

@@ -3,26 +3,26 @@
     <Navigator active-func="Search" />
 
     <el-card shadow="never" style="width:90%; margin: auto;">
-      <el-row :gutter="20">
-        <el-col :sm="24" :md="6">
+      <el-row :gutter="20" type="flex" class="row-bg" justify="end">
+        <el-col :sm="24" :md="6" v-if="typeid == 2">
           <el-card class="searchFilter">
             <div class="selectorItem">
               <div class="selectorHeader">
                 <div class="selectorHeaderPoint"></div>
-                <div class="selectorHeaderText">分类</div>
+                <div class="selectorHeaderText">标签</div>
+                <el-button size="medium" type="text" @click="getCheckedNodes" class="selectorBtn">过滤</el-button>
                 <el-button
-                  size="small"
-                  type="primary"
-                  round
-                  @click="getCheckedNodes"
+                  size="medium"
+                  type="text"
+                  style="color: #F56C6C"
+                  @click="resetCheckedNodes"
                   class="selectorBtn"
-                >过滤</el-button>
+                >清空</el-button>
               </div>
               <div class="selector">
                 <el-tree
                   :data="selectorData"
                   show-checkbox
-                  default-expand-all
                   node-key="id"
                   ref="tree"
                   highlight-current
@@ -43,7 +43,7 @@
             <el-button slot="append" icon="el-icon-search" @click="searchContent"></el-button>
           </el-input>
 
-          <div v-if="typeid == 1">
+          <div v-if="typeid == 1" class="typeBox">
             <div v-for="expert in expertList" :key="expert._id">
               <div class="eachItem">
                 <el-card shadow="always" class="box-card">
@@ -71,29 +71,22 @@
             </div>
           </div>
 
-          <div v-else-if="typeid == 2">
-            <div v-for="paper in paperList" :key="paper._id">
-              <div class="eachItem">
+          <div v-else-if="typeid == 2" class="typeBox">
+            <div
+              v-for="paper in paperList.slice((currentPage - 1) * pagesize , currentPage * pagesize)"
+              :key="paper._id "
+            >
+              <div class="eachItem" v-if="selectedList.indexOf(paper.paperTags[0]) != -1">
                 <el-card shadow="always" class="box-card">
                   <!--标题-->
                   <div slot="header" class="clearfix">
-                    <span
-                      id="titleText"
-                      @click="toDetail(paper._id)"
-                    >{{paper.paperTitle | paperTitleEllipsis}}</span>
+                    <span id="titleText" @click="toPaperDetail(paper._id)">{{paper.paperTitle}}</span>
                   </div>
-                  <!--标签-->
-                  <div class="textItem">
-                    <span>
-                      标签：
-                      <span v-for="(tag,index) in paper.paperTags" :key="index">
-                        <span v-if="index == 0">{{tag}}</span>
-                        <span v-else>,{{tag}}</span>
-                      </span>
-                    </span>
-                  </div>
+
                   <!--摘要-->
-                  <div class="textItem">摘要：{{paper.paperAbstract | paperAbstractEllipsis}}</div>
+                  <div class="textItem">
+                    <span>摘要：{{paper.paperAbstract == undefined ? '(暂无)' : paper.paperAbstract | paperAbstractEllipsis}}</span>
+                  </div>
                   <!--作者-->
                   <div class="textItem">
                     <span>
@@ -104,55 +97,127 @@
                       </span>
                     </span>
                   </div>
-                  <!--被引量-->
-                  <div class="textItem">被引量：{{paper.quoteNum}}</div>
+                  <!--来源-->
+                  <div
+                    class="textItem"
+                  >来源：{{paper.paperPublication == undefined ? '(暂无)' : paper.paperPublication}}</div>
+                  <!--标签-->
+                  <div class="textItem">
+                    <span>
+                      标签：
+                      <span v-for="(tag,index) in paper.paperTags" :key="index">
+                        <span v-if="index == 0">{{tag}}</span>
+                        <span v-else>,{{tag}}</span>
+                      </span>
+                    </span>
+                  </div>
                   <!--时间-->
-                  <div class="textItem">时间：{{paper.paperTime.split(" ")[0]}}</div>
+                  <!--被引量-->
+                  <div
+                    class="textItem"
+                  >时间：{{paper.paperTime == undefined ? '(暂无)' : paper.paperTime.split(" ")[0]}} 被引量：{{paper.quoteNum == undefined ? '(暂无)' : paper.quoteNum}}</div>
                 </el-card>
                 <el-divider></el-divider>
               </div>
             </div>
           </div>
 
-          <div v-else-if="typeid == 4">
-            <div v-for="patent in patentList" :key="patent._id">
+          <div v-else-if="typeid == 4" class="typeBox">
+            <div
+              v-for="patent in patentList.slice((currentPage - 1) * pagesize , currentPage * pagesize)"
+              :key="patent"
+            >
               <div class="eachItem">
                 <el-card shadow="always" class="box-card">
                   <!--专利名字-->
                   <div slot="header" class="clearfix">
-                    <span id="titleText" @click="toDetail(patent._id)">{{patent.patentName}}</span>
+                    <span
+                      id="titleText"
+                      @click="toPatentDetail(patent._id)"
+                    >{{patent.patentName == undefined ? '(暂无)': patent.patentName}}</span>
                   </div>
-                  <!--标签-->
-                  <div class="textItem">
-                    <span>
-                      标签：
-                      <span v-for="(tag,index) in patent.patentTags" :key="index">
-                        <span v-if="index == 0">{{tag}}</span>
-                        <span v-else>,{{tag}}</span>
-                      </span>
-                    </span>
-                  </div>
+
                   <!--摘要-->
-                  <div class="textItem">摘要：{{patent.patentAbstract}}</div>
+                  <div
+                    class="textItem"
+                  >摘要：{{patent.patentAbstract == undefined ? '(暂无)': patent.patentAbstract}}</div>
                   <!--作者-->
                   <div class="textItem">
                     <span>
                       作者：
+                      <span v-if=" patent.patentAuthors.length == 0 ">(暂无)</span>
                       <span v-for="(author,index) in patent.patentAuthors" :key="index">
                         <span v-if="index == 0">{{author}}</span>
                         <span v-else>,{{author}}</span>
                       </span>
                     </span>
                   </div>
+                  <!--标签-->
+                  <div class="textItem">
+                    <span>
+                      标签：
+                      <span
+                        v-if="patent.patentTags.length == 0 || patent.patentTags[0] == ''"
+                      >(暂无)</span>
+                      <span v-for="(tag,index) in patent.patentTags" :key="index">
+                        <span v-if="index == 0">{{tag}}</span>
+                        <span v-else>,{{tag}}</span>
+                      </span>
+                    </span>
+                  </div>
                   <!--机构-->
-                  <div class="textItem">机构：{{patent.patentAgency}}</div>
+                  <div
+                    class="textItem"
+                  >机构：{{patent.patentAgency == undefined ? '(暂无)': patent.patentAgency}}</div>
                   <!--时间-->
-                  <div class="textItem">时间：{{patent.patentTime.split(" ")[0]}}</div>
+                  <div
+                    class="textItem"
+                  >时间：{{patent.patentTime == undefined ? '(暂无)': patent.patentTime.split(" ")[0]}}</div>
                 </el-card>
                 <el-divider></el-divider>
               </div>
             </div>
           </div>
+
+          <div v-else-if="typeid == 0" class="typeBox">
+            <el-card shadow="always" class="box-card">
+              <div id="emptyRes">
+                <div id="emptyResText">
+                  <div>搜索结果为空</div>
+                </div>
+              </div>
+            </el-card>
+          </div>
+
+          <div v-else-if="typeid == -1" class="typeBox">
+            <el-card shadow="always" class="box-card">
+              <div id="emptyRes">
+                <div id="emptyResText">筛选结果为空</div>
+              </div>
+            </el-card>
+          </div>
+
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            layout="prev, pager, next"
+            :total="expertList.length"
+            v-if="typeid == 1"
+          ></el-pagination>
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            layout="prev, pager, next"
+            :total="paperList.length"
+            v-else-if="typeid == 2"
+          ></el-pagination>
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            layout="prev, pager, next"
+            :total="patentList.length"
+            v-else-if="typeid == 4"
+          ></el-pagination>
         </el-col>
       </el-row>
     </el-card>
@@ -170,41 +235,124 @@ export default {
   },
   data() {
     return {
-      typeid: 2,
       select: "论文",
+      typeid: 2,
       searchInput: "",
       resList: [],
       selectorData: [
         {
           id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1"
-            }
-          ]
+          label: "artificial intelligence"
         },
         {
           id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
+          label: "robot"
+        },
+        {
+          id: 3,
+          label: "computer vision"
+        },
+        {
+          id: 4,
+          label: "hierarchical"
+        },
+        {
+          id: 5,
+          label: "software engineering"
+        },
+        {
+          id: 6,
+          label: "computer language"
+        },
+        {
+          id: 7,
+          label: "simulation"
+        },
+        {
+          id: 8,
+          label: "simulating"
+        },
+        {
+          id: 9,
+          label: "computer graphics"
+        },
+        {
+          id: 10,
+          label: "computer graphics"
+        },
+        {
+          id: 11,
+          label: "integrated circuit"
+        },
+        {
+          id: 12,
+          label: "microelectronic system"
+        },
+        {
+          id: 13,
+          label: "computer network"
+        },
+        {
+          id: 14,
+          label: "information security"
+        },
+        {
+          id: 15,
+          label: "database"
+        },
+        {
+          id: 16,
+          label: "web"
+        },
+        {
+          id: 17,
+          label: "hardware"
+        },
+        {
+          id: 18,
+          label: "algorithm"
+        },
+        {
+          id: 19,
+          label: "fortran"
+        },
+        {
+          id: 20,
+          label: "operating system"
+        },
+        {
+          id: 21,
+          label: "compiler"
         }
+      ],
+      selectedList: [
+        "artificial intelligence",
+        "robot",
+        "computer vision",
+        "hierarchical",
+        "software engineering",
+        "computer language",
+        "simulation",
+        "simulating",
+        "computer graphics",
+        "digital system",
+        "integrated circuit",
+        "microelectronic system",
+        "computer network",
+        "information security",
+        "database",
+        "web",
+        "hardware",
+        "algorithm",
+        "fortran",
+        "operating system",
+        "compiler"
       ],
       expertList: [
         {
           _id: "",
           user: "",
-          expertTags: ["", "", ""],
+          expertTags: ["加载中"],
           achieveIntro: "",
           expertEmail: "",
           emailPublicity: "",
@@ -220,44 +368,47 @@ export default {
       ],
       paperList: [
         {
-          _id: "5df774e390a5db2132601a8a",
-          uploadExpert: "5df48bc4c2df6a4bf5e94681",
-          paperTags: ["3214", "3241", "1234"], //
-          DOI: "2342",
-          paperTitle: "1234", //
-          paperTime: "2019-12-09 16:00:00", //
-          paperUrl: "63456",
-          paperAbstract: "4536", //
-          quoteNum: 0, //
+          _id: "",
+          uploadExpert: "",
+          paperTags: ["加载中"], //
+          DOI: "",
+          paperTitle: "加载中", //
+          paperTime: "加载中", //
+          paperPublication: "加载中", //
+          paperAbstract: "加载中", //
+          quoteNum: "加载中", //
           readNum: 0,
           starNum: 0,
           starUser: [],
-          author: ["2314", "456", "643"] //
+          author: ["加载中"] //
         }
       ],
       patentList: [
         {
-          _id: "5df77a3821c71750263a2c71",
-          uploadExpert: "5df48bc4c2df6a4bf5e94681",
-          patentTags: ["2131", "123", "1231"], //
-          patentName: "231412", //
-          patentNo: "2",
-          patentTime: "2019-12-17 16:00:00", //
-          patentAgency: "buaa", //
-          patentAbstract: "3213", //
+          _id: "",
+          uploadExpert: "",
+          patentTags: ["加载中"], //
+          patentName: "加载中", //
+          patentNo: "",
+          patentTime: "加载中", //
+          patentAgency: "加载中", //
+          patentAbstract: "加载中", //
           readNum: 0,
           starNum: 0,
           starUser: [],
-          patentAuthors: ["32131", "123123", "1231232"] //
+          patentAuthors: ["加载中"] //
         }
       ],
       defaultProps: {
         children: "children",
         label: "label"
-      }
+      },
+      currentPage: 1,
+      pagesize: 10,
+      visibelLength: 0
     };
   },
-  created() {
+  async created() {
     this.initialSearch();
   },
   methods: {
@@ -274,12 +425,16 @@ export default {
         //或者从中提取部分内容
         //（具体能提取那些值建议先用console输出然后再调试窗口进行查看）
         this.resList = res.data;
-        if (this.typeid == 1) {
-          this.expertList = this.resList;
-        } else if (this.typeid == 2) {
-          this.paperList = this.resList;
-        } else if (this.typeid == 4) {
-          this.patentList = this.resList;
+        if (this.resList.length == 0) {
+          this.typeid = 0;
+        } else {
+          if (this.typeid == 1) {
+            this.expertList = JSON.parse(JSON.stringify(this.resList));
+          } else if (this.typeid == 2) {
+            this.paperList = JSON.parse(JSON.stringify(this.resList));
+          } else if (this.typeid == 4) {
+            this.patentList = JSON.parse(JSON.stringify(this.resList));
+          }
         }
       } catch (e) {
         //出错就利用el的消息提示输出错误
@@ -313,22 +468,55 @@ export default {
           break;
       }
     },
-    getCheckedNodes() {
-      // 此处获得所选的分类值
-      window.console.log(this.$refs.tree.getCheckedNodes(true, false));
+    async getCheckedNodes() {
+      // 此处获得所选的分类
+      this.selectedList.splice(0);
+      var tempList = await this.$refs.tree.getCheckedNodes(true, false);
+      var i;
+      for (i = 0; i < tempList.length; i++) {
+        this.selectedList.push(tempList[i].label);
+      }
+      if (this.typeid == 1) {
+        this.expertList.splice(0);
+        for (i = 0; i < this.resList.length; i++) {
+          if (this.selectedList.indexOf(this.resList[i].paperTags[0]) != -1) {
+            this.expertList.push(JSON.parse(JSON.stringify(this.resList[i])));
+          }
+        }
+      } else if (this.typeid == 2) {
+        this.paperList.splice(0);
+        for (i = 0; i < this.resList.length; i++) {
+          if (this.selectedList.indexOf(this.resList[i].paperTags[0]) != -1) {
+            this.paperList.push(JSON.parse(JSON.stringify(this.resList[i])));
+          }
+        }
+      } else if (this.typeid == 4) {
+        this.patentList.splice(0);
+        for (i = 0; i < this.resList.length; i++) {
+          if (this.selectedList.indexOf(this.resList[i].paperTags[0]) != -1) {
+            this.patentList.push(JSON.parse(JSON.stringify(this.resList[i])));
+          }
+        }
+      }
+    },
+    resetCheckedNodes() {
+      this.$refs.tree.setCheckedNodes([]);
+    },
+    handleCurrentChange: function(currentPage) {
+      this.currentPage = currentPage;
     },
     searchContent() {
       //搜索就相当于跳转到当前页面，借助created方法内容进行搜索
       //百度貌似就是用的这种方法
       switch (this.select) {
         case "专家":
-          this.typeid = "1";
+          this.typeid = 1;
           break;
         case "论文":
-          this.typeid = "2";
+          this.typeid = 2;
           break;
         case "专利":
-          this.typeid = "4";
+          this.typeid = 4;
           break;
       }
       //产生新的链接地址，可通过点击搜索了解工作原理
@@ -341,8 +529,11 @@ export default {
         this.$message("123");
       }
     },
-    toDetail(id) {
-      this.$router.push({ path: "/Detail/" + id });
+    toPaperDetail(id) {
+      this.$router.push({ path: "/paperdetail/" + id });
+    },
+    toPatentDetail(id) {
+      this.$router.push({ path: "/patentdetail/" + id });
     }
   },
   filters: {
@@ -402,7 +593,11 @@ export default {
 }
 
 .selectorBtn {
-  margin-left: 50px;
+  margin-left: 20px;
+}
+.typeBox {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .eachItem {
@@ -413,7 +608,8 @@ export default {
 .textItem {
   display: flex;
   text-align: left;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #titleText {
@@ -421,6 +617,22 @@ export default {
   display: flex;
   text-align: left;
   cursor: pointer;
+}
+
+#emptyRes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#emptyResText {
+  font-size: 1.2em;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+#emptySearchInput {
+  color: #f56c6c;
 }
 
 .el-header,

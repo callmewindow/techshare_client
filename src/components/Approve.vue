@@ -1,96 +1,103 @@
 <template>
-  <el-card>
-    <div class="titlePart">
-      <div class="typeChoose">
-        <div>
-          <span>类型分类：</span>
-          <el-radio-group v-model="radio" @change="flushList()">
-            <el-radio :label="'unhandled'">未定</el-radio>
-            <el-radio :label="'applyRefused'">已拒绝</el-radio>
-            <el-radio :label="'applyPassed'">已通过</el-radio>
-          </el-radio-group>
+  <div>
+    <Navigator active-func="Approve" />
+    <el-card>
+      <div class="titlePart">
+        <div class="typeChoose">
+          <div>
+            <span>类型分类：</span>
+            <el-radio-group v-model="radio" @change="flushList()">
+              <el-radio :label="'unhandled'">未定</el-radio>
+              <el-radio :label="'applyRefused'">已拒绝</el-radio>
+              <el-radio :label="'applyPassed'">已通过</el-radio>
+            </el-radio-group>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="tablePart">
-      <div class="table">
-        <el-table :data="visibleList" fit style="width: 100%" :default-sort="{prop: 'date'}">
-          <el-table-column prop="applyTime" label="时间"></el-table-column>
-          <el-table-column prop="applicantName" label="姓名"></el-table-column>
-          <el-table-column prop="applicantEmail" label="邮箱地址"></el-table-column>
-          <el-table-column prop="applicantTitle" label="职位"></el-table-column>
-          <el-table-column prop="applicantWorkplace" label="工作地址"></el-table-column>
-          <el-table-column label="操作" width="100">
-            <template slot-scope="scope">
-              <el-button
-                @click="handleApprove(scope.row)"
-                size="small"
-                circle
-                icon="el-icon-edit"
-                type="primary"
-                v-if="radio == 'unhandled' "
-              ></el-button>
-              <el-button size="small" circle icon="el-icon-edit" type="primary" v-else disabled></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </div>
-    <div class="dialogPart">
-      <el-dialog title="审批申请" :visible.sync="dialogVisible" width="50%">
-        <div style="font-size:1.20em">证明图片资料</div>
-        <div style="font-size:1.05em; color:#777">（点击查看大图）</div>
-        <div class="demo-image__preview">
-          <el-image
-            style="width: 80%; height: 80%"
-            :src="applicantImage"
-            :fit="'contain'"
-            :preview-src-list="applicantImageList"
-          ></el-image>
+      <div class="tablePart">
+        <div class="table">
+          <el-table :data="visibleList" fit style="width: 100%" :default-sort="{prop: 'date'}">
+            <el-table-column prop="applyTime" label="时间"></el-table-column>
+            <el-table-column prop="applicantName" label="姓名"></el-table-column>
+            <el-table-column prop="applicantEmail" label="邮箱地址"></el-table-column>
+            <el-table-column prop="applicantTitle" label="职位"></el-table-column>
+            <el-table-column prop="applicantWorkplace" label="工作地址"></el-table-column>
+            <el-table-column label="操作" width="100">
+              <template slot-scope="scope">
+                <el-button
+                  @click="handleApprove(scope.row)"
+                  size="small"
+                  circle
+                  icon="el-icon-edit"
+                  type="primary"
+                  v-if="radio == 'unhandled' "
+                ></el-button>
+                <el-button size="small" circle icon="el-icon-edit" type="primary" v-else disabled></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
-        <br />
-        <el-input
-          type="textarea"
-          :rows="3"
-          placeholder="请输入通过或拒绝的原因"
-          v-model="resultReason"
-          style="width: 80%"
-        ></el-input>
+      </div>
+      <div class="dialogPart">
+        <el-dialog title="审批申请" :visible.sync="dialogVisible" width="50%">
+          <div style="font-size:1.20em">证明图片资料</div>
+          <div style="font-size:1.05em; color:#777">（点击查看大图）</div>
+          <div class="demo-image__preview">
+            <el-image
+              style="width: 80%; height: 80%"
+              :src="applicantImage"
+              :fit="'contain'"
+              :preview-src-list="applicantImageList"
+            ></el-image>
+          </div>
+          <br />
+          <el-input
+            type="textarea"
+            :rows="3"
+            placeholder="请输入通过或拒绝的原因"
+            v-model="resultReason"
+            style="width: 80%"
+          ></el-input>
 
-        <span slot="footer" class="dialog-footer">
-          <el-button
-            type="primary"
-            @click="dialogVisible = false, resultReason = ''"
-            round
-            size="medium"
-            style="font-size:1.03em"
-          >取 消</el-button>
-          <el-button
-            type="danger"
-            @click="refuseApply()"
-            round
-            size="medium"
-            style="font-size:1.03em"
-            v-if="radio == 'unhandled'"
-          >拒 绝</el-button>
-          <el-button
-            type="success"
-            @click="passApply()"
-            round
-            size="medium"
-            style="font-size:1.03em"
-            v-if="radio == 'unhandled'"
-          >通 过</el-button>
-        </span>
-      </el-dialog>
-    </div>
-  </el-card>
+          <span slot="footer" class="dialog-footer">
+            <el-button
+              type="primary"
+              @click="dialogVisible = false, resultReason = ''"
+              round
+              size="medium"
+              style="font-size:1.03em"
+            >取 消</el-button>
+            <el-button
+              type="danger"
+              @click="refuseApply()"
+              round
+              size="medium"
+              style="font-size:1.03em"
+              v-if="radio == 'unhandled'"
+            >拒 绝</el-button>
+            <el-button
+              type="success"
+              @click="passApply()"
+              round
+              size="medium"
+              style="font-size:1.03em"
+              v-if="radio == 'unhandled'"
+            >通 过</el-button>
+          </span>
+        </el-dialog>
+      </div>
+    </el-card>
+  </div>
 </template>
 
 <script>
+import Navigator from "@/components/Navigator";
 import * as applyAPI from "../APIs/apply";
 export default {
   name: "Approve",
+  components: {
+    Navigator
+  },
   data() {
     return {
       radio: "unhandled",

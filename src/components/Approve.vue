@@ -91,9 +91,13 @@
 </template>
 
 <script>
+import Navigator from "@/components/Navigator";
 import * as applyAPI from "../APIs/apply";
 export default {
   name: "Approve",
+  components: {
+    Navigator
+  },
   data() {
     return {
       radio: "unhandled",

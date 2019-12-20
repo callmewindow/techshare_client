@@ -12,7 +12,7 @@
       </el-menu-item>
 
       <el-menu-item style="float:right;" @click="toUser" index="User">
-        <el-badge :is-dot="this.$store.state.noticeNum !== 0" :hidden="this.$store.state.noticeNum === 0" class="item">
+        <el-badge :is-dot="this.$store.state.messageNum !== 0" :hidden="this.$store.state.messageNum === 0" class="item">
           <i class="el-icon-user"></i>
         </el-badge>
       </el-menu-item>
@@ -57,7 +57,7 @@
         this.$router.push({path: '/Home'});
       },
       toSearch() {
-        this.$router.push({path: '/Search'});
+        this.$router.push({path: '/Search/?typeid=2&content='});
       },
       toUser() {
         if(this.$store.state.userId === 'null')
@@ -71,10 +71,12 @@
           this.$router.push({path: '/User'});
         }
       },
-      toSetting() {
-        this.$router.push({path: '/Setting'});
-      },
       toExpert() {
+        if(this.$store.state.expertId === 'null'){
+          this.$message('暂无专家身份，请进行申请或等待审核');
+          this.$router.push({path: '/ExpertApp'});
+          return ;
+        }
         this.$router.push({path: '/Expert'});
       },
     }

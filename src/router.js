@@ -44,6 +44,18 @@ const router = new Router({
       }
     },
     {
+      path: '/ExpertApp',
+      name: 'ExpertApp',
+      component: () =>
+        import('./components/ExpertApp.vue'),
+    },
+    {
+      path: '/Login',
+      name: 'Login',
+      component: () =>
+        import('./components/LoginTemp.vue'),
+    },
+    {
       path: '/Detail',
       name: 'Detail',
       component: () =>

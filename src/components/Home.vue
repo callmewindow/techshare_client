@@ -32,26 +32,30 @@
       <div id="link">
         <el-row :gutter="20">
           <el-col :xs="12" :sm="6" :md="4" v-for="(li,index) in links" :key="index">
-            <div id="linkImg">
+            <div id="linkImg" @click="toOut(li.url)">
               <el-image
-                style="height: 80px"
+                style="height: 50px;padding: 5px"
                 :src="li.img"
-                fit="contain"></el-image>
+                fit="contain"
+              />
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
+    <Footer />
   </el-card>
 </template>
 
 <script>
   import Navigator from "@/components/Navigator";
+  import Footer from "@/components/Footer";
 
   export default {
     name: "Home",
     components: {
       Navigator,
+      Footer,
     },
     data() {
       return {
@@ -61,43 +65,43 @@
         typeid: '',
         links:[
           {
-            img:require("@/images/齐木楠雄1.png"),
-            url:"",
+            img:require("@/images/中国知网.jpg"),
+            url:"https://www.cnki.net/",
+          },
+          {
+            img:require("@/images/万方数据.jpg"),
+            url:"http://www.wanfangdata.com.cn/",
+          },
+          {
+            img:require("@/images/维普网.jpg"),
+            url:"http://www.cqvip.com/",
+          },
+          {
+            img:require("@/images/SpringerLink.png"),
+            url:"https://link.springer.com/",
+          },
+          {
+            img:require("@/images/ScienceDirect.png"),
+            url:"https://www.sciencedirect.com/",
+          },
+          {
+            img:require("@/images/WileyOnline.png"),
+            url:"https://onlinelibrary.wiley.com/",
+          },
+          {
+            img:require("@/images/ScienceWeb.jpg"),
+            url:"http://apps.webofknowledge.com/",
+          },
+          {
+            img:require("@/images/EngineeringVillage.png"),
+            url:"http://www.engineeringvillage.com/",
+          },
+          {
+            img:require("@/images/sagepub.png"),
+            url:"https://journals.sagepub.com/",
           },
           {
             img:require("@/images/techshare.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/techshare.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/齐木楠雄2.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/techshare.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/techshare.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/齐木楠雄3.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/techshare.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/techshare.png"),
-            url:"",
-          },
-          {
-            img:require("@/images/齐木楠雄4.png"),
             url:"",
           },
           {
@@ -131,6 +135,13 @@
         }
         this.$router.push({path:"/Search/?typeid="+this.typeid+"&content="+this.searchInput});
       },
+      toOut(url){
+        if(url === ''){
+          location.reload();
+          return ;
+        }
+        window.open(url,'target','')
+      }
     }
   }
 </script>
@@ -165,8 +176,8 @@
     margin-top: 10px;
   }
   #linkImg{
+    cursor: pointer;
     border-radius: 4px;
-    min-height: 80px;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   }
   .el-col{

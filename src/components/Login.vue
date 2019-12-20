@@ -67,6 +67,9 @@
         } else if (value.length < 6) {
           return callback(new Error('密码格式错误：长度须大于6位'));
         } else {
+          if(/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(value) == false){
+            return callback(new Error('密码格式错误：必须同时包含字母和数字'));
+          }
           callback();
         }
       };
@@ -119,6 +122,7 @@
         try {
           const userInfo = await userAPI.login(this.login.username, this.login.password);
           const res = userInfo.data.msg;
+          window.console.log(userInfo);
           if (res == "error") {
             this.$message.error('用户名或密码错误');
           } else {
@@ -127,6 +131,25 @@
               type: 'success'
             });
             this.$store.state.userId = userInfo.data.user._id;
+            this.$store.state.identity = userInfo.data.user.identity;
+            this.$store.state.messages = userInfo.data.user.messages;
+            if(this.$store.state.messages){
+              let msg = this.$store.state.messages;
+              let cnt = 0;
+              for(let i = 0;i<msg.length;i++){
+                if(msg[i].noticeRead !== 'yes'){
+                  cnt++;
+                }
+              }
+              this.$store.state.messageNum = cnt;
+            }
+            // this.$store.state.nickname = userInfo.data.user.nickname;
+            // this.$store.state.userEmail = userInfo.data.user.userEmail;
+            // this.$store.state.userIntro = userInfo.data.user.userIntro;
+            // this.$store.state.username = userInfo.data.user.username;
+            if(userInfo.data.user.expert){
+              this.$store.state.expertId = userInfo.data.user.expert;
+            }
             setTimeout(() => {
               this.$router.push({path: '/Home'});
             }, 2000);
@@ -149,16 +172,16 @@
                 this.$message.error('哦豁，数据库错误');
               } else {
                 this.$message({
-                  message: '注册成功，3秒后跳转至主页',
+                  message: '注册成功，2秒后跳转至主页',
                   type: 'success'
                 });
-                this.$store.state.username = userInfo.data.user._id;
+                this.$store.state.userId = userInfo.data.user._id;
                 setTimeout(() => {
                   this.$router.push({path: '/Home'});
-                }, 3000);
+                }, 2000);
               }
             } catch (e) {
-              this.$message.error('哦豁');
+              this.$message.error('哦豁'+e.toString());
             }
           } else {
             return false;

@@ -145,10 +145,10 @@
                         <el-link class="noticeBtn" type="primary" @click="toPaper(notice.noticePlusContent)">
                           前往论文
                         </el-link>
-                        <el-link class="noticeBtn" type="primary" @click="passClaim(notice)">
+                        <el-link class="noticeBtn" type="primary" @click="passClaim(notice,index)">
                           通过
                         </el-link>
-                        <el-link class="noticeBtn" type="primary" @click="declClaim(notice)">
+                        <el-link class="noticeBtn" type="primary" @click="declClaim(notice,index)">
                           拒绝
                         </el-link>
                       </template>
@@ -331,19 +331,20 @@
           this.$message.error(e.toString());
         }
       },
-      async passClaim(notice) {
+      async passClaim(notice,index) {
         try {
           const temp = await claimAPI.passClaim(notice.noticePlusContent,notice.noticeContent.split("邮箱为 ")[1]);
           window.console.log(temp);
-          await this.getUserInfo();
+		  await this.readNotice(index);
         } catch (e) {
           this.$message.error(e.toString());
         }
       },
-      async declClaim(notice) {
+      async declClaim(notice,index) {
         try {
           const temp = await claimAPI.refuseClaim(notice.noticePlusContent,notice.noticeContent.split("邮箱为 ")[1]);
           window.console.log(temp);
+		  await this.readNotice(index);
           await this.getUserInfo();
         } catch (e) {
           this.$message.error(e.toString());

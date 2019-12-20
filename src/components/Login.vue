@@ -147,8 +147,8 @@
             // this.$store.state.userEmail = userInfo.data.user.userEmail;
             // this.$store.state.userIntro = userInfo.data.user.userIntro;
             // this.$store.state.username = userInfo.data.user.username;
-            if(userInfo.data.user.expertId){
-              this.$store.state.expertId = userInfo.data.user.expert._id;
+            if(userInfo.data.user.expert){
+              this.$store.state.expertId = userInfo.data.user.expert;
             }
             setTimeout(() => {
               this.$router.push({path: '/Home'});
@@ -172,16 +172,16 @@
                 this.$message.error('哦豁，数据库错误');
               } else {
                 this.$message({
-                  message: '注册成功，3秒后跳转至主页',
+                  message: '注册成功，2秒后跳转至主页',
                   type: 'success'
                 });
                 this.$store.state.userId = userInfo.data.user._id;
                 setTimeout(() => {
                   this.$router.push({path: '/Home'});
-                }, 3000);
+                }, 2000);
               }
             } catch (e) {
-              this.$message.error('哦豁');
+              this.$message.error('哦豁'+e.toString());
             }
           } else {
             return false;

@@ -38,9 +38,9 @@ const router = new Router({
       path: '/Expert',
       name: 'Expert',
       component: () =>
-          import('./components/Expert.vue'),
-      meta:{
-        keepAlive:true
+        import('./components/Expert.vue'),
+      meta: {
+        keepAlive: true
       }
     },
     {
@@ -56,11 +56,18 @@ const router = new Router({
         import('./components/LoginTemp.vue'),
     },
     {
-      path: '/Detail',
-      name: 'Detail',
+      path: '/paperdetail/:id',
+      name: 'paperdetail',
       component: () =>
-        import('./components/Detail.vue'),
+        import('./components/PaperDetail.vue'),
     },
+    {
+      path: '/patentdetail/:id',
+      name: 'patentdetail',
+      component: () =>
+        import('./components/PatentDetail.vue'),
+    },
+
     {
       path: '/AddInfo',
       name: 'AddInfo',

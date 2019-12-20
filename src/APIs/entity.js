@@ -20,7 +20,7 @@ export const getPaperInfo = paperId => {
 export const addPaperReading = paperId => {
   return axios({
     method: 'POST',
-    url: `/api/paper/uploadPaper`,
+    url: `/api/paper/addPaperReading`,
     data: QS({ paperId })
   })
 }
@@ -29,7 +29,14 @@ export const addPaperStar = (userId, paperId) => {
   return axios({
     method: 'POST',
     url: `/api/paper/addPaperStar`,
-    data: QS({ userId,paperId })
+    data: QS({ userId, paperId })
+  })
+}
+
+export const getRelatedPaper = paperId => {
+  return axios({
+    method: 'GET',
+    url: `/api/paper/getRelatedPaper?paperId=${paperId}`
   })
 }
 
@@ -49,10 +56,19 @@ export const getPatentInfo = patentId => {
   })
 }
 
+export const addPaperQuote = (paperId) => {
+  return axios({
+    method: 'POST',
+    url: `/api/paper/addPaperQuote`,
+    data: QS({ paperId })
+  })
+}
+
+
 export const addPatentReading = patentId => {
   return axios({
     method: 'POST',
-    url: `/api/patent/uploadPatent`,
+    url: `/api/patent/addPatentReading`,
     data: QS({ patentId })
   })
 }
@@ -61,6 +77,6 @@ export const addPatentStar = (userId, patentId) => {
   return axios({
     method: 'POST',
     url: `/api/patent/addPatentStar`,
-    data: QS({ userId,patentId })
+    data: QS({ userId, patentId })
   })
 }

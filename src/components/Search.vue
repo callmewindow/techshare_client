@@ -80,7 +80,7 @@
                 <el-card shadow="always" class="box-card">
                   <!--标题-->
                   <div slot="header" class="clearfix">
-                    <span id="titleText" @click="toDetail(paper._id)">{{paper.paperTitle}}</span>
+                    <span id="titleText" @click="toPaperDetail(paper._id)">{{paper.paperTitle}}</span>
                   </div>
 
                   <!--摘要-->
@@ -133,7 +133,7 @@
                   <div slot="header" class="clearfix">
                     <span
                       id="titleText"
-                      @click="toDetail(patent._id)"
+                      @click="toPatentDetail(patent._id)"
                     >{{patent.patentName == undefined ? '(暂无)': patent.patentName}}</span>
                   </div>
 
@@ -529,8 +529,11 @@ export default {
         this.$message("123");
       }
     },
-    toDetail(id) {
-      this.$router.push({ path: "/Detail/" + id });
+    toPaperDetail(id) {
+      this.$router.push({ path: "/paperdetail/" + id });
+    },
+    toPatentDetail(id) {
+      this.$router.push({ path: "/patentdetail/" + id });
     }
   },
   filters: {

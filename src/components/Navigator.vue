@@ -19,9 +19,15 @@
       <el-menu-item style="float:right;" @click="toExpert" index="Expert">
         <i class="el-icon-s-custom"></i>
       </el-menu-item>
+
+      <el-menu-item v-if="this.$store.state.identity === 'admin'" style="float:right;" @click="toApprove" index="Approve">
+        <i class="el-icon-document"></i>
+      </el-menu-item>
+
 <!--      <el-menu-item style="float:right;" @click="toSetting" index="Setting">-->
 <!--        <i class="el-icon-setting"></i>-->
 <!--      </el-menu-item>-->
+
     </el-menu>
 
     <el-card shadow="never" id="loginWin" v-if="loginShow === 'yes'">
@@ -55,6 +61,9 @@
     methods: {
       toHome() {
         this.$router.push({path: '/Home'});
+      },
+      toApprove() {
+        this.$router.push({path: '/Approve'});
       },
       toSearch() {
         this.$router.push({path: '/Search/?typeid=2&content='});

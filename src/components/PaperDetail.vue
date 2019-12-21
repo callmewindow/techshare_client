@@ -94,7 +94,7 @@
                   {{referredTimes}}
                 </div>
               </el-col>
-              <el-col :xs="4" :sm="4" :md="2" :lg="2">
+              <el-col v-if="$store.state.expertId !== 'null'" :xs="4" :sm="4" :md="2" :lg="2">
                 <el-link type="primary" @click="display ^= true">
                   我引用了
                 </el-link>
@@ -129,7 +129,7 @@
               <el-col :xs="10" :sm="10" :md="7" :lg="7">
                 <el-button type="primary" plain @click="report()">报错</el-button>
               </el-col>
-              <el-col :xs="4" :sm="4" :md="2" :lg="2" v-if="isExpert">
+              <el-col v-if="$store.state.expertId !== 'null'"  :xs="4" :sm="4" :md="2" :lg="2">
                 <el-button type="primary" plain v-if="hasUp" @click="yesUp()">认领</el-button>
                 <el-button type="primary" plain v-if="!hasUp" @click="noUp()">认领</el-button>
               </el-col>
@@ -169,14 +169,14 @@
                   <el-row class="col-row">
                     <el-col :span="24">
                       <div class="factor-text" style="text-align: left; line-height: 1.6;">
-                        {{document.paperAbstract|paperTitleEllipsis}}
+                        摘要：{{document.paperAbstract|paperTitleEllipsis}}
                       </div>
                     </el-col>
                   </el-row>
 
                   <el-row class="col-row">
                     <el-col>
-                      <el-link @click="searchAuthor($event)" type="primary" style="float: left;">{{document.author[0]}}</el-link>
+                      <span style="float :left;font-size: 14px;line-height: 1.1">作者： </span><el-link @click="searchAuthor($event)" type="primary" style="float: left;">{{document.author[0]}}</el-link>
                     </el-col>
                   </el-row>
 
@@ -207,7 +207,6 @@
         refID:'',
 
         display: false,
-        isExpert: true,
         hasUp: true,
         uploadExpertId: "",
         paperId: "",

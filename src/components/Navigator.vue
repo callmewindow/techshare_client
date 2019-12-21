@@ -74,12 +74,16 @@ export default {
       if (this.$store.state.userId === "null") {
         this.$message("请先登录");
         this.$router.push({ path: "/Login" });
-        return;
       } else {
         this.$router.push({ path: "/User" });
       }
     },
     toExpert() {
+      if (this.$store.state.userId === "null") {
+        this.$message("请先登录");
+        this.$router.push({ path: "/Login" });
+        return ;
+      }
       if(this.$store.state.expertId === 'null'){
         this.$message('暂无专家身份，请进行申请或等待审核');
         this.$router.push({path: '/ExpertApp'});

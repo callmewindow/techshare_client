@@ -9,7 +9,7 @@
             <div class="selectorItem">
               <div class="selectorHeader">
                 <div class="selectorHeaderPoint"></div>
-                <div class="selectorHeaderText">标签</div>
+                <div class="selectorHeaderText">标签筛选</div>
                 <el-button size="medium" type="text" @click="getCheckedNodes" class="selectorBtn">过滤</el-button>
                 <el-button
                   size="medium"
@@ -44,27 +44,38 @@
           </el-input>
 
           <div v-if="typeid == 1" class="typeBox">
-            <div v-for="expert in expertList" :key="expert._id">
+            <div v-for="(expert,index) in expertList" :key="index">
               <div class="eachItem">
                 <el-card shadow="always" class="box-card">
                   <!--姓名-->
                   <div slot="header" class="clearfix">
-                    <span class="titleText" @click="toDetail(expert._id)">{{expert.expertName}}</span>
+                    <span class="titleText" @click="toExpert(expert._id)">{{expert.expertName}}</span>
+                  </div>
+                  <div class="textItem">
+                    <span>
+                      职称：{{expert.expertTitle}}
+                    </span>
+                  </div>
+                  <div class="textItem">
+                    <span>
+                      机构：{{expert.workplace}}
+                    </span>
                   </div>
                   <!--领域-->
                   <div class="textItem">
                     <span>
-                      所属领域：
+                      标签：
                       <span v-for="(tag,index) in expert.expertTags" :key="index">
                         <span v-if="index == 0">{{tag}}</span>
                         <span v-else>,{{tag}}</span>
                       </span>
+                      <span v-if="expert.expertTags.length === 0">
+                        该专家暂无标签
+                      </span>
                     </span>
                   </div>
-                  <!--论文数-->
-                  <div class="textItem">{{expert.paperNum}}</div>
-                  <!--专利数-->
-                  <div class="textItem">{{expert.patentNum}}</div>
+                  <!--论文专利数-->
+                  <div class="textItem">论文数：{{expert.paperNum}} 专利数：{{expert.patentNum}}</div>
                 </el-card>
                 <el-divider></el-divider>
               </div>
@@ -73,8 +84,8 @@
 
           <div v-else-if="typeid == 2" class="typeBox">
             <div
-              v-for="paper in paperList.slice((currentPage - 1) * pagesize , currentPage * pagesize)"
-              :key="paper._id "
+              v-for="(paper,index) in paperList.slice((currentPage - 1) * pagesize , currentPage * pagesize)"
+              :key="index"
             >
               <div class="eachItem" v-if="selectedList.indexOf(paper.paperTags[0]) != -1">
                 <el-card shadow="always" class="box-card">
@@ -124,8 +135,8 @@
 
           <div v-else-if="typeid == 4" class="typeBox">
             <div
-              v-for="patent in patentList.slice((currentPage - 1) * pagesize , currentPage * pagesize)"
-              :key="patent"
+              v-for="(patent,index) in patentList.slice((currentPage - 1) * pagesize , currentPage * pagesize)"
+              :key="index"
             >
               <div class="eachItem">
                 <el-card shadow="always" class="box-card">
@@ -246,88 +257,84 @@ export default {
       selectorData: [
         {
           id: 1,
-          label: "artificial intelligence"
-        },
-        {
-          id: 2,
-          label: "robot"
-        },
-        {
-          id: 3,
-          label: "computer vision"
-        },
-        {
-          id: 4,
-          label: "hierarchical"
-        },
-        {
-          id: 5,
-          label: "software engineering"
-        },
-        {
-          id: 6,
-          label: "computer language"
-        },
-        {
-          id: 7,
-          label: "simulation"
-        },
-        {
-          id: 8,
-          label: "simulating"
-        },
-        {
-          id: 9,
-          label: "computer graphics"
-        },
-        {
-          id: 10,
-          label: "computer graphics"
-        },
-        {
-          id: 11,
-          label: "integrated circuit"
-        },
-        {
-          id: 12,
-          label: "microelectronic system"
-        },
-        {
-          id: 13,
-          label: "computer network"
-        },
-        {
-          id: 14,
-          label: "information security"
-        },
-        {
-          id: 15,
-          label: "database"
-        },
-        {
-          id: 16,
-          label: "web"
-        },
-        {
-          id: 17,
-          label: "hardware"
-        },
-        {
-          id: 18,
           label: "algorithm"
         },
         {
-          id: 19,
+          id: 2,
+          label: "artificial intelligence"
+        },
+        {
+          id: 3,
+          label: "compiler"
+        },
+        {
+          id: 4,
+          label: "computer language"
+        },
+        {
+          id: 5,
+          label: "computer graphics"
+        },
+        {
+          id: 6,
+          label: "computer network"
+        },
+        {
+          id: 7,
+          label: "computer vision"
+        },
+        {
+          id: 8,
+          label: "database"
+        },
+        {
+          id: 9,
           label: "fortran"
         },
         {
-          id: 20,
+          id: 10,
+          label: "hardware"
+        },
+        {
+          id: 11,
+          label: "hierarchical"
+        },
+        {
+          id: 12,
+          label: "information security"
+        },
+        {
+          id: 13,
+          label: "integrated circuit"
+        },
+        {
+          id: 14,
+          label: "microelectronic system"
+        },
+        {
+          id: 15,
           label: "operating system"
         },
         {
-          id: 21,
-          label: "compiler"
-        }
+          id: 16,
+          label: "robot"
+        },
+        {
+          id: 17,
+          label: "simulating"
+        },
+        {
+          id: 18,
+          label: "simulation"
+        },
+        {
+          id: 19,
+          label: "software engineering"
+        },
+        {
+          id: 20,
+          label: "web"
+        },
       ],
       selectedList: [
         "artificial intelligence",
@@ -416,6 +423,9 @@ export default {
     this.initialSearch();
   },
   methods: {
+    toExpert(id){
+      this.$router.push({path: '/Expert/'+id});
+    },
     async searchByKeyword() {
       //在异常获取中进行
       try {
@@ -434,6 +444,7 @@ export default {
         } else {
           if (this.typeid == 1) {
             this.expertList = JSON.parse(JSON.stringify(this.resList));
+            window.console.log(this.expertList);
           } else if (this.typeid == 2) {
             this.paperList = JSON.parse(JSON.stringify(this.resList));
           } else if (this.typeid == 4) {
@@ -504,7 +515,8 @@ export default {
       }
     },
     resetCheckedNodes() {
-      this.$refs.tree.setCheckedNodes([]);
+      location.reload();
+      // this.$refs.tree.setCheckedNodes([]);
     },
     handleCurrentChange: function(currentPage) {
       this.currentPage = currentPage;

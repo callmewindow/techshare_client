@@ -124,10 +124,10 @@
           expertEmail: ''
         },
         ruleForm: {
-          expertName: 'wyx',
-          expertTitle: 'ahahahaha',
-          workplace: 'buaa',
-          expertEmail: 'wyx@buaa.edu.cn'
+          expertName: '',
+          expertTitle: '',
+          workplace: '',
+          expertEmail: ''
         },
         rules: {
           expertName: [

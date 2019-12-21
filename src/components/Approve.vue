@@ -49,7 +49,7 @@
       <div class="dialogPart">
         <el-dialog title="审批申请" :visible.sync="dialogVisible" width="50%">
           <div style="font-size:1.20em">证明图片资料</div>
-          <div style="font-size:1.05em; color:#777">（点击查看大图）</div>
+          <div style="font-size:1.05em; color:#777">（点击查看大图，需要加载一段时间）</div>
           <div class="demo-image__preview">
             <el-image
               style="width: 80%; height: 80%"
@@ -150,6 +150,7 @@ export default {
             this.visibleList.push(this.applyList[i]);
           }
         }
+        this.$message.success("拒绝成功")
       }
       // 已通过
       else {
@@ -157,6 +158,7 @@ export default {
           if (this.applyList[i].resultType === "Passed") {
             this.visibleList.push(this.applyList[i]);
           }
+          this.$message.success("通过成功")
         }
       }
     },

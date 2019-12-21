@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <Navigator active-func="Expert"/>
+      <Navigator :active-func="expertIdNow === $store.state.expertId?'Expert':''"/>
 
       <div id="main">
         <el-row :gutter="20" class="info">
@@ -11,14 +11,18 @@
             <div class="expertImg">
               <i class="el-icon-s-custom expertIcon" style="color: #409EFF"></i>
             </div>
-            <div v-if="this.expertIdNow !== this.$store.state.expertId">
-              <el-button icon="el-icon-star-off" @click="follow" round v-if="isfollow===false">关注</el-button>
-              <el-button icon="el-icon-star-off" @click="unfollow" round v-else-if="isfollow===true">已关注</el-button>
-            </div>
-            <div v-if="this.expertIdNow === this.$store.state.expertId">
-              <el-button @click="toSelf" round>学者本人</el-button>
-            </div>
-
+            <template v-if="this.$store.state.userId !== 'null'">
+              <div v-if="this.expertIdNow !== this.$store.state.expertId">
+                <el-button icon="el-icon-star-off" @click="follow" round v-if="isfollow===false">关注</el-button>
+                <el-button @click="unfollow" round v-else-if="isfollow===true">取消关注</el-button>
+              </div>
+              <div v-if="this.expertIdNow === this.$store.state.expertId">
+                <el-button @click="toSelf" round>学者本人</el-button>
+              </div>
+            </template>
+            <template v-if="this.$store.state.userId === 'null'">
+                <el-button @click="toSelf" round>登录后关注</el-button>
+            </template>
           </el-col>
 
           <el-col :xs="{span:12,offset:0}" :sm="{span:9,offset:0}" :md="{span:7,offset:0}" :lg="{span:6,offset:0}"
@@ -42,7 +46,7 @@
                 <el-link
                   v-for="(tag,index) in expert.expertTags"
                   :key="index"
-                  @click="toTag(tag)"
+                  @click="toPaperTag(tag)"
                   type="primary"
                   style="margin-left:5px"
                 >
@@ -96,7 +100,7 @@
             <div v-if="paperList.length === 0">
               该专家暂无上传的论文
             </div>
-            <div v-for="item in paperList" :key="item._id">
+            <div v-for="(item,i) in paperList" :key="i">
               <div class="eachItem">
                 <el-card shadow="always" class="box-card">
                   <div slot="header">
@@ -107,12 +111,13 @@
                   <el-divider></el-divider>
 
                   <div class="textItem">
-                    摘要：{{item.paperAbstract | informationEllipsis}}
+                    <span v-if="item.paperAbstract">摘要：{{item.paperAbstract | informationEllipsis}}</span>
+                    <span v-if="!item.paperAbstract">暂无摘要</span>
                   </div>
                   <div class="textItem">
                     <span>标签：
                       <span v-for="(tag,index) in item.paperTags" :key="index">
-                        <el-link type="primary" @click="toPaperTag(tag)">{{tag}} </el-link>
+                        <el-link :underline="false" type="primary" @click="toPaperTag(tag)">{{tag}} </el-link>
                       </span>
                     </span>
                   </div>
@@ -129,7 +134,7 @@
             <div v-if="patentList.length === 0">
               该专家暂无上传的专利
             </div>
-            <div v-for="item in patentList" :key="item._id">
+            <div v-for="(item,i) in patentList" :key="i">
               <div class="eachItem">
                 <el-card shadow="always" class="box-card">
                   <div slot="header">
@@ -138,15 +143,14 @@
                   </div>
                   <el-divider></el-divider>
                   <div class="textItem">
-                    <span>
-                      摘要：{{item.patentAbstract?(item.patentAbstract|informationEllipsis):'暂无摘要'}}
-                    </span>
+                    <span v-if="item.patentAbstract">摘要：{{item.patentAbstract | informationEllipsis}}</span>
+                    <span v-if="!item.patentAbstract">暂无摘要</span>
                   </div>
                   <div class="textItem">
                     <span>
                       标签：
                       <span v-for="(tag,index) in item.patentTags" :key="index">
-                        <el-link type="primary" @click="toPatentTag(tag)">{{tag}} </el-link>
+                        <el-link :underline="false" type="primary" @click="toPatentTag(tag)">{{tag}} </el-link>
                       </span>
                     </span>
                   </div>
@@ -180,7 +184,6 @@
       return {
         newExpertIntro: '',
         expertIdNow: '',
-        wel: require("@/images/齐木楠雄1.png"),
         activeName_Tab: 'first',
         noIntro: '该专家暂无成果简介',
         isfollow: false,
@@ -200,28 +203,29 @@
           "expertTitle": "heihei",
           "expertName": "jym"
         },
+        paperList: [],
         patentList: [],
-        paperList: [
-          {
-            "_id": "5dfbb32c59eecd624e4f6d47",
-            "paperTags": [
-              "digital system"
-            ],
-            "paperTitle": "Automatic test-generation and test-verification of digital systems",
-            "paperTime": "1974-01-01 00:00:00",
-            "paperPublication": "Proceedings of the 11th Design Automation Workshop",
-            "paperAbstract": "The widespread use of large scale and medium scale integrated circuits, coupled with the trend towards larger boards, made manual generation of test patterns very expensive, somewhat ineffective, and rather difficult to update for design changes. The advent of MOS LSI's with extremely large gate density made manual test-verification, the process of finding failures detected by a given test pattern, an impossibility. Therefore, a series of programs was developed, over the years, to completely automate the test cycle&mdash;using logic description files as input, the final output for test generation is a test deck compiled in the language of card test equipment and, in the case of test-verification, lists of detected and undetected failures. All this is accomplished within the global constraint of complete (nearly 100%) coverage and prevailing test floor practices.",
-            "quoteNum": 0,
-            "readNum": 0,
-            "starNum": 0,
-            "starUser": [],
-            "author": [
-              "J. P. Verma",
-              "D. M. Selove",
-              "J. N. Tessier"
-            ]
-          },
-        ],
+        // paperList: [
+        //   {
+        //     "_id": "5dfbb32c59eecd624e4f6d47",
+        //     "paperTags": [
+        //       "digital system"
+        //     ],
+        //     "paperTitle": "Automatic test-generation and test-verification of digital systems",
+        //     "paperTime": "1974-01-01 00:00:00",
+        //     "paperPublication": "Proceedings of the 11th Design Automation Workshop",
+        //     "paperAbstract": "The widespread use of large scale and medium scale integrated circuits, coupled with the trend towards larger boards, made manual generation of test patterns very expensive, somewhat ineffective, and rather difficult to update for design changes. The advent of MOS LSI's with extremely large gate density made manual test-verification, the process of finding failures detected by a given test pattern, an impossibility. Therefore, a series of programs was developed, over the years, to completely automate the test cycle&mdash;using logic description files as input, the final output for test generation is a test deck compiled in the language of card test equipment and, in the case of test-verification, lists of detected and undetected failures. All this is accomplished within the global constraint of complete (nearly 100%) coverage and prevailing test floor practices.",
+        //     "quoteNum": 0,
+        //     "readNum": 0,
+        //     "starNum": 0,
+        //     "starUser": [],
+        //     "author": [
+        //       "J. P. Verma",
+        //       "D. M. Selove",
+        //       "J. N. Tessier"
+        //     ]
+        //   },
+        // ],
         // patentList: [
         //   {
         //     "_id": "5dfc6ff4c73bd993f31e97e7",
@@ -254,7 +258,8 @@
     methods: {
       async follow() {
         try {
-          const res = await expertAPI.followExpert(this.$store.state.userId, this.$store.state.expertId);
+          const res = await expertAPI.followExpert(this.$store.state.userId, this.expertIdNow);
+          window.console.log(res);
           let resInfo = res.data;
           if (resInfo.msg === "ok") {
             this.isfollow = true;
@@ -267,7 +272,7 @@
       },
       async unfollow() {
         try {
-          const res = await expertAPI.cancelExpert(this.$store.state.userId, this.$store.state.expertId);
+          const res = await expertAPI.cancelExpert(this.$store.state.userId, this.expertIdNow);
           let resInfo = res.data;
           if (resInfo.msg === "ok") {
             this.isfollow = false;
@@ -315,24 +320,19 @@
           this.newExpertIntro = this.expert.achieveIntro;
         } catch (e) {
           this.$message.error(e.toString());
+          await this.$router.push({path: '/Home'});
         }
       },
       async getFruit() {
-        // try {
-        //
-        //   const res_patent = await expertAPI.getExpertPatent(this.expertIdNow);
-        //   window.console.log(res_patent);
-        //   let temp_patent = res_patent.data;
-        //   this.expert.patentList = temp_patent.patentList;
-        //   const res_paper = await expertAPI.getExpertPaper(this.expertIdNow);
-        //   window.console.log(res_paper);
-        //   let temp_paper = res_paper.data;
-        //   this.expert.paperList = temp_paper.paperList;
-        //
-        // } catch (e) {
-        //   //出错就利用el的消息提示输出错误
-        //   this.$message.error(e.toString());
-        // }
+        try {
+          const res_patent = await expertAPI.getExpertPatent(this.expertIdNow);
+          this.patentList = res_patent.data;
+          const res_paper = await expertAPI.getExpertPaper(this.expertIdNow);
+          this.paperList = res_paper.data;
+
+        } catch (e) {
+          this.$message.error(e.toString());
+        }
       },
       toSelf() {
         location.reload();
@@ -353,15 +353,15 @@
     filters: {
       titleEllipsis(value) {
         if (!value) return "";
-        if (value.length > 60) {
-          return value.slice(0, 60) + "...";
+        if (value.length > 100) {
+          return value.slice(0, 100) + "...";
         }
         return value;
       },
       informationEllipsis(value) {
         if (!value) return "";
-        if (value.length > 200) {
-          return value.slice(0, 200) + "...";
+        if (value.length > 300) {
+          return value.slice(0, 300) + "...";
         }
         return value;
       },

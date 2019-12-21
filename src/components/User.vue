@@ -129,6 +129,7 @@
                       <div class="noticeCon">
                         {{notice.noticeContent}}
                       </div>
+                      <!-- 下方的消息筛选，是完全基于和后端接口适配进行的，消息字段的设计不太足，因此看起来有点蠢 -->
                       <el-link v-if="notice.noticeType !== '论文认领'" class="noticeBtn" type="primary"
                                @click="readNotice(index)">
                         已读
@@ -142,15 +143,21 @@
                         前往专利
                       </el-link>
                       <template v-if="notice.noticeType === '论文认领'">
+                        <el-link v-if="notice.noticeContent.slice(0,3) === '您认领'" class="noticeBtn" type="primary"
+                                 @click="readNotice(index)">
+                          已读
+                        </el-link>
                         <el-link class="noticeBtn" type="primary" @click="toPaper(notice.noticePlusContent)">
                           前往论文
                         </el-link>
-                        <el-link class="noticeBtn" type="primary" @click="passClaim(notice,index)">
-                          通过
-                        </el-link>
-                        <el-link class="noticeBtn" type="primary" @click="declClaim(notice,index)">
-                          拒绝
-                        </el-link>
+                        <template v-if="notice.noticeContent.slice(0,3) !== '您认领'">
+                          <el-link class="noticeBtn" type="primary" @click="passClaim(notice,index)">
+                            通过
+                          </el-link>
+                          <el-link class="noticeBtn" type="primary" @click="declClaim(notice,index)">
+                            拒绝
+                          </el-link>
+                        </template>
                       </template>
                     </div>
                   </div>
@@ -382,6 +389,7 @@
         } catch (e) {
           //出错就利用el的消息提示输出错误
           this.$message.error(e.toString());
+          await this.$router.push({path: '/Home'});
         }
       }
     }

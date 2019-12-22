@@ -145,7 +145,7 @@
             }
             if(userInfo.data.user.expert){
               this.$store.state.expertId = userInfo.data.user.expert;
-            }
+            }window.console.log(userInfo);
             setTimeout(() => {
               this.$router.push({path: '/Home'});
             }, 2000);
@@ -159,7 +159,7 @@
           if (valid) {
             try {
               const userInfo = await userAPI.register(this.register.username, this.register.nickname, this.register.password, this.register.userEmail);
-              const res = userInfo.msg;
+              const res = userInfo.data.msg;
               if (res === "existUsername") {
                 this.$message.error('用户名已被注册');
               } else if (res === "existUserEmail") {
@@ -192,7 +192,7 @@
                 }, 2000);
               }
             } catch (e) {
-              this.$message.error('哦豁'+e.toString());
+              this.$message.error('哦豁，'+e.toString());
             }
           } else {
             return false;

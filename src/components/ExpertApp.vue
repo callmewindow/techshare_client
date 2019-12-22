@@ -186,6 +186,7 @@
       },
 
       submitPic() {
+        this.submitForm('ruleForm');
         this.$refs.upload.submit();
       },
 

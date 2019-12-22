@@ -150,7 +150,6 @@ export default {
             this.visibleList.push(this.applyList[i]);
           }
         }
-        this.$message.success("拒绝成功")
       }
       // 已通过
       else {
@@ -158,7 +157,6 @@ export default {
           if (this.applyList[i].resultType === "Passed") {
             this.visibleList.push(this.applyList[i]);
           }
-          this.$message.success("通过成功")
         }
       }
     },
@@ -176,6 +174,7 @@ export default {
       await this.flushList();
       this.resultReason = "";
       this.dialogVisible = false;
+      this.$message.success("拒绝成功");
     },
     async passApply() {
       await applyAPI.applyPassed(this.applyId, this.resultReason);
@@ -183,6 +182,7 @@ export default {
       await this.flushList();
       this.resultReason = "";
       this.dialogVisible = false;
+      this.$message.success("通过成功");
     }
   },
   async created() {
